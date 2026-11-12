@@ -1,0 +1,152 @@
+<title>HTTP & data fetching</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">HTTP so'rovlar</span><span c-lang="ru">HTTP-запросы</span><span c-lang="en">HTTP &amp; data fetching</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Avtomatik backend so'rovlari: <code>c-get</code>, <code>c-post</code>, <code>c-put</code>, <code>c-patch</code>, <code>c-delete</code>.</span>
+    <span c-lang="ru">Автоматические запросы к бэкенду: <code>c-get</code>, <code>c-post</code>, <code>c-put</code>, <code>c-patch</code>, <code>c-delete</code>.</span>
+    <span c-lang="en">Automatic backend requests: <code>c-get</code>, <code>c-post</code>, <code>c-put</code>, <code>c-patch</code>, <code>c-delete</code>.</span>
+  </p>
+
+  <h2 id="c-get">c-get</h2>
+  <div c-code="html"><script type="text/plain">
+    <section c-get="/api/users" c-as="users">
+      <p c-loading>Loading…</p>
+      <p c-error>Something went wrong</p>
+      <p c-empty>No users yet</p>
+      <ul>
+        <li c-for="u in users" c-key="u.id">{{ u.name }}</li>
+      </ul>
+      <button @click="$reload()">Refresh</button>
+    </section>
+  </script></div>
+  <p c-lang="uz">Javob <code>c-as</code> nomi bilan saqlanadi (agar bu nom tashqi <code>c-data</code>'da bo'lsa — o'sha yerga yoziladi). Ichki elementlarga quyidagilar ochiq:</p>
+  <p c-lang="ru">Ответ сохраняется под именем из <code>c-as</code> (если такое имя есть во внешнем <code>c-data</code> — записывается туда). Внутри доступны:</p>
+  <p c-lang="en">The response is stored under the <code>c-as</code> name (if an outer <code>c-data</code> already has that name, it's written there). Inside you get:</p>
+  <table>
+    <tr><td><code>$loading</code> · <code>$loaded</code></td><td><span c-lang="uz">Holat bayroqlari</span><span c-lang="ru">Флаги состояния</span><span c-lang="en">Status flags</span></td></tr>
+    <tr><td><code>$error</code></td><td><code>{ message, status, data }</code></td></tr>
+    <tr><td><code>$data</code> · <code>$response</code> · <code>$status</code></td><td><span c-lang="uz">Javob</span><span c-lang="ru">Ответ</span><span c-lang="en">The response</span></td></tr>
+    <tr><td><code>$reload()</code></td><td><span c-lang="uz">Qayta so'rash</span><span c-lang="ru">Перезапросить</span><span c-lang="en">Re-run the request</span></td></tr>
+    <tr><td><code>c-loading</code> · <code>c-loaded</code> · <code>c-error</code> · <code>c-empty</code></td><td><span c-lang="uz">Holatga qarab ko'rinadigan elementlar</span><span c-lang="ru">Элементы, видимые в нужном состоянии</span><span c-lang="en">Elements shown only in that state</span></td></tr>
+  </table>
+  <p c-lang="uz">So'rov paytida elementga <code>aria-busy="true"</code> va <code>.c-loading</code> klassi qo'shiladi.</p>
+  <p c-lang="ru">Во время запроса элемент получает <code>aria-busy="true"</code> и класс <code>.c-loading</code>.</p>
+  <p c-lang="en">While loading, the element gets <code>aria-busy="true"</code> and the <code>.c-loading</code> class.</p>
+
+  <h2 id="reactive-urls"><span c-lang="uz">Reaktiv URL</span><span c-lang="ru">Реактивные URL</span><span c-lang="en">Reactive URLs</span></h2>
+  <p c-lang="uz">URL ichidagi <code c-pre>{{ }}</code> o'zgarsa, so'rov qayta yuboriladi. Qiymatlar avtomatik <code>encodeURIComponent</code> qilinadi. Eskirgan javoblar e'tiborsiz qoldiriladi — "race condition" bo'lmaydi.</p>
+  <p c-lang="ru">Если меняется <code c-pre>{{ }}</code> в URL — запрос повторяется. Значения кодируются через <code>encodeURIComponent</code>. Устаревшие ответы игнорируются — гонок нет.</p>
+  <p c-lang="en">When a <code c-pre>{{ }}</code> inside the URL changes, the request re-runs. Values are <code>encodeURIComponent</code>-encoded. Stale responses are discarded — no race conditions.</p>
+  <div c-code="html"><script type="text/plain">
+    <div c-data="{ q: '', page: 1 }">
+      <input c-model="q" placeholder="Search…">
+      <ul c-get="/api/cities?q={{ q }}&page={{ page }}" c-as="cities" c-debounce="250">
+        <li c-for="c in cities">{{ c.name }}</li>
+      </ul>
+    </div>
+  </script></div>
+  <div class="demo-box" c-data="{ q: 'sa' }">
+    <div class="live-label">Live</div>
+    <input class="mini-input" c-model="q">
+    <ul class="mini-list" c-get="/api/cities?q={{ q }}" c-as="cities" c-debounce="250">
+      <li c-loading style="color:var(--muted)">⏳ loading…</li>
+      <li c-for="c in cities" c-key="c.id">{{ c.name }} <small>{{ c.region }}</small></li>
+      <li c-empty>—</li>
+    </ul>
+  </div>
+
+  <h2 id="triggers"><span c-lang="uz">Triggerlar</span><span c-lang="ru">Триггеры</span><span c-lang="en">Triggers</span></h2>
+  <p c-lang="uz">Standart: forma → <code>submit</code>; tugma va havola → <code>click</code>; input/select → <code>change</code>; boshqa elementlar → <code>load</code>. <code>c-trigger</code> bilan o'zgartiring:</p>
+  <p c-lang="ru">По умолчанию: форма → <code>submit</code>; кнопка и ссылка → <code>click</code>; input/select → <code>change</code>; остальные → <code>load</code>. Меняется через <code>c-trigger</code>:</p>
+  <p c-lang="en">Defaults: forms → <code>submit</code>; buttons and links → <code>click</code>; inputs/selects → <code>change</code>; anything else → <code>load</code>. Override with <code>c-trigger</code>:</p>
+  <div c-code="html"><script type="text/plain">
+    <div c-get="/api/stats" c-trigger="intersect">…</div>        <!-- lazy: when scrolled into view -->
+    <div c-get="/api/time" c-trigger="load, every 10s">…</div>   <!-- polling -->
+    <div c-get="/api/feed" c-poll="30s">…</div>                   <!-- same thing -->
+    <div c-get="/api/report" c-trigger="none">                    <!-- only via $reload() -->
+      <button @click="$reload()">Generate</button>
+    </div>
+    <input name="q" c-get="/api/check" c-trigger="input" c-debounce="300">
+  </script></div>
+  <p c-lang="uz">Polling fon tablarda avtomatik to'xtaydi.</p>
+  <p c-lang="ru">Polling автоматически приостанавливается во фоновых вкладках.</p>
+  <p c-lang="en">Polling pauses automatically in background tabs.</p>
+
+  <h2 id="mutations"><span c-lang="uz">O'zgartiruvchi so'rovlar</span><span c-lang="ru">Изменяющие запросы</span><span c-lang="en">Mutations</span></h2>
+  <div c-code="html"><script type="text/plain">
+    <button c-delete="/api/todos/{{ todo.id }}" c-confirm="Delete this todo?">🗑</button>
+
+    <button c-patch="/api/todos/{{ todo.id }}" c-body="{ done: !todo.done }">Toggle</button>
+
+    <button c-post="/api/orders" c-body="{ items: $store.cart.items }"
+            c-then="$store.cart.items = []; $nav('/thanks')"
+            c-catch="$toast($error.message, 'error')">Checkout</button>
+
+    <form c-put="/api/profile" c-redirect="/profile">…</form>
+  </script></div>
+  <table>
+    <tr><td><code>c-body</code></td><td><span c-lang="uz">Yuboriladigan ma'lumot (ifoda). Formalarda standart — maydonlar.</span><span c-lang="ru">Тело запроса (выражение). Для форм по умолчанию — поля.</span><span c-lang="en">Request body (expression). Forms default to their fields.</span></td></tr>
+    <tr><td><code>c-then</code> · <code>c-catch</code></td><td><span c-lang="uz">Muvaffaqiyat / xato ifodasi (<code>$response</code>, <code>$error</code>)</span><span c-lang="ru">Выражение при успехе / ошибке (<code>$response</code>, <code>$error</code>)</span><span c-lang="en">Success / failure expression (<code>$response</code>, <code>$error</code>)</span></td></tr>
+    <tr><td><code>c-confirm</code></td><td><span c-lang="uz">Avval tasdiq so'raydi</span><span c-lang="ru">Сначала спрашивает подтверждение</span><span c-lang="en">Ask for confirmation first</span></td></tr>
+    <tr><td><code>c-redirect</code></td><td><span c-lang="uz">Muvaffaqiyatdan keyin sahifaga o'tish</span><span c-lang="ru">Перейти на страницу после успеха</span><span c-lang="en">Navigate after success</span></td></tr>
+    <tr><td><code>c-headers</code></td><td><code>{ 'X-Token': token }</code></td></tr>
+    <tr><td><code>c-select</code></td><td><span c-lang="uz">Javobdan qism olish: <code>c-select="data.items"</code></span><span c-lang="ru">Взять часть ответа: <code>c-select="data.items"</code></span><span c-lang="en">Pick part of the response: <code>c-select="data.items"</code></span></td></tr>
+    <tr><td><code>c-cache="30s"</code></td><td><span c-lang="uz">GET javobini keshlash</span><span c-lang="ru">Кэшировать GET-ответ</span><span c-lang="en">Cache a GET response</span></td></tr>
+    <tr><td><code>c-sync="false"</code></td><td><span c-lang="uz">Smart sync'ni o'chirish</span><span c-lang="ru">Отключить smart sync</span><span c-lang="en">Opt out of smart sync</span></td></tr>
+  </table>
+  <p c-lang="uz">Xato bo'lsa va <code>c-catch</code> yoki <code>c-error</code> bo'lmasa, Comet avtomatik toast ko'rsatadi — xatolar hech qachon jim yo'qolmaydi.</p>
+  <p c-lang="ru">Если запрос упал, а <code>c-catch</code> или <code>c-error</code> нет, Comet покажет toast — ошибки не теряются молча.</p>
+  <p c-lang="en">If a mutation fails and there's no <code>c-catch</code> or <code>c-error</code>, Comet shows a toast — errors are never silently lost.</p>
+
+  <h2 id="smart-sync">Smart sync</h2>
+  <p c-lang="uz">Muvaffaqiyatli <code>POST /api/todos</code>, <code>PATCH /api/todos/5</code> yoki <code>DELETE /api/todos/5</code>'dan keyin sahifadagi <code>c-get="/api/todos…"</code> elementlari o'zi qayta yuklanadi. Qo'lda yangilash kodi kerak emas. Mutatsiyadan keyin GET keshi ham tozalanadi.</p>
+  <p c-lang="ru">После успешного <code>POST /api/todos</code>, <code>PATCH /api/todos/5</code> или <code>DELETE /api/todos/5</code> элементы <code>c-get="/api/todos…"</code> перезагружаются сами. Никакого ручного обновления. Кэш GET тоже очищается.</p>
+  <p c-lang="en">After a successful <code>POST /api/todos</code>, <code>PATCH /api/todos/5</code> or <code>DELETE /api/todos/5</code>, every <code>c-get="/api/todos…"</code> on the page refreshes itself. No manual refresh code. The GET cache is cleared too.</p>
+
+  <h2 id="html-swaps"><span c-lang="uz">HTML almashtirish</span><span c-lang="ru">Замена HTML</span><span c-lang="en">HTML swaps</span></h2>
+  <p c-lang="uz">Server HTML qaytarsa, u element ichiga (yoki <code>c-target</code>'ga) qo'yiladi va ichidagi Comet direktivalari ishga tushadi. <code>c-swap</code>: <code>inner</code> (standart), <code>outer</code>, <code>append</code>, <code>prepend</code>, <code>before</code>, <code>after</code>.</p>
+  <p c-lang="ru">Если сервер вернул HTML, он вставляется в элемент (или в <code>c-target</code>), а директивы Comet внутри оживают. <code>c-swap</code>: <code>inner</code> (по умолчанию), <code>outer</code>, <code>append</code>, <code>prepend</code>, <code>before</code>, <code>after</code>.</p>
+  <p c-lang="en">If the server returns HTML, it's swapped into the element (or <code>c-target</code>) and any Comet directives inside come alive. <code>c-swap</code>: <code>inner</code> (default), <code>outer</code>, <code>append</code>, <code>prepend</code>, <code>before</code>, <code>after</code>.</p>
+  <div c-code="html"><script type="text/plain">
+    <button c-get="/partials/more-posts?page=2" c-target="#posts" c-swap="append">Load more</button>
+    <div id="posts">…</div>
+  </script></div>
+  <div class="demo-box" c-data="{ on: false }">
+    <div class="live-label">Live</div>
+    <button class="btn btn-sm" @click="on = true">Load fragment</button>
+    <div c-if="on" c-get="/api/fragment"></div>
+  </div>
+
+  <h2 id="fetch">$fetch</h2>
+  <p c-lang="uz">JavaScript'dan ham xuddi shu imkoniyatlar (mock, dedupe, interceptor, smart sync):</p>
+  <p c-lang="ru">Те же возможности (mock, дедупликация, интерсепторы, smart sync) доступны из JavaScript:</p>
+  <p c-lang="en">The same pipeline (mocks, dedupe, interceptors, smart sync) from JavaScript:</p>
+  <div c-code="js"><script type="text/plain">
+    const users = await Comet.fetch('/api/users');               // or $fetch in templates
+    const user  = await Comet.fetch.post('/api/users', { name: 'Ann' });
+    await Comet.fetch.patch('/api/users/1', { role: 'admin' });
+    await Comet.fetch.delete('/api/users/1');
+    const data  = await Comet.fetch('/api/stats', { cache: '1m' });
+
+    // errors throw: { message, status, data }
+    try { await Comet.fetch('/api/secret') } catch (e) { if (e.status === 401) Comet.navigate('/login') }
+  </script></div>
+
+  <h2 id="config"><span c-lang="uz">Global sozlamalar</span><span c-lang="ru">Глобальные настройки</span><span c-lang="en">Global configuration</span></h2>
+  <div c-code="js"><script type="text/plain">
+    Comet.http.base = 'https://api.example.com';     // prefix for URLs starting with "/"
+    Comet.http.headers['X-App'] = 'my-app';
+
+    // interceptors
+    Comet.http.before((req) => {
+      const token = localStorage.getItem('token');
+      if (token) req.headers.Authorization = 'Bearer ' + token;
+    });
+    Comet.http.after((res) => {
+      if (res.status === 401) Comet.navigate('/login');
+    });
+  </script></div>
+  <p c-lang="uz">Bir xil GET so'rovlar bir vaqtda kelsa, faqat bittasi yuboriladi (dedupe).</p>
+  <p c-lang="ru">Одновременные одинаковые GET-запросы объединяются в один (дедупликация).</p>
+  <p c-lang="en">Identical concurrent GET requests are merged into one (dedupe).</p>
+</div>

@@ -1,0 +1,123 @@
+<title>Routing & pages</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Router va sahifalar</span><span c-lang="ru">Роутер и страницы</span><span c-lang="en">Routing &amp; pages</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz"><code>c-view</code> qo'shing — sayt avtomatik SPA'ga aylanadi. Fayllar = manzillar.</span>
+    <span c-lang="ru">Добавьте <code>c-view</code> — сайт автоматически станет SPA. Файлы = адреса.</span>
+    <span c-lang="en">Add <code>c-view</code> and your site becomes an SPA. Files are routes.</span>
+  </p>
+
+  <h2 id="setup"><span c-lang="uz">Sozlash</span><span c-lang="ru">Настройка</span><span c-lang="en">Setup</span></h2>
+  <div c-code="html" data-file="index.html"><script type="text/plain">
+    <body>
+      <header>…shared navigation…</header>
+      <main c-view></main>            <!-- pages render here; defaults to the "pages/" folder -->
+      <footer>…</footer>
+    </body>
+  </script></div>
+  <table>
+    <tr><th>URL</th><th><span c-lang="uz">Yuklanadigan fayl</span><span c-lang="ru">Загружаемый файл</span><span c-lang="en">File loaded</span></th></tr>
+    <tr><td><code>/</code></td><td><code>pages/index.html</code></td></tr>
+    <tr><td><code>/about</code></td><td><code>pages/about.html</code></td></tr>
+    <tr><td><code>/blog</code></td><td><code>pages/blog.html</code> → <code>pages/blog/index.html</code></td></tr>
+    <tr><td><code>/docs/intro</code></td><td><code>pages/docs/intro.html</code></td></tr>
+    <tr><td><span c-lang="uz">topilmasa</span><span c-lang="ru">не найдено</span><span c-lang="en">not found</span></td><td><code>pages/404.html</code> <span c-lang="uz">(yoki standart 404)</span><span c-lang="ru">(или встроенная 404)</span><span c-lang="en">(or a built-in 404)</span></td></tr>
+  </table>
+  <p c-lang="uz">Sahifa fayllari — oddiy HTML qismlar. Ularga script ulash shart emas. Sahifadagi <code>&lt;title&gt;</code> va <code>&lt;meta name="description"&gt;</code> avtomatik qo'llanadi, <code>&lt;script&gt;</code>'lar bajariladi.</p>
+  <p c-lang="ru">Файлы страниц — обычные фрагменты HTML, подключать скрипт не нужно. <code>&lt;title&gt;</code> и <code>&lt;meta name="description"&gt;</code> применяются автоматически, <code>&lt;script&gt;</code> выполняются.</p>
+  <p c-lang="en">Page files are plain HTML fragments — no script tag needed. Their <code>&lt;title&gt;</code> and <code>&lt;meta name="description"&gt;</code> are applied automatically, and <code>&lt;script&gt;</code> tags run.</p>
+  <div c-code="html" data-file="pages/about.html"><script type="text/plain">
+    <title>About us</title>
+    <meta name="description" content="Who we are">
+
+    <h1>About us</h1>
+    <p>Current path: {{ $route.path }}</p>
+  </script></div>
+  <p c-lang="uz">To'liq HTML hujjatlar (<code>&lt;html&gt;…&lt;/html&gt;</code>) ham ishlaydi — Comet ulardan <code>&lt;body&gt;</code> (yoki <code>[c-view]</code>) ichini oladi. Ya'ni mavjud ko'p sahifali saytni ham SPA'ga aylantirish mumkin.</p>
+  <p c-lang="ru">Полные HTML-документы (<code>&lt;html&gt;…&lt;/html&gt;</code>) тоже работают — Comet берёт содержимое <code>&lt;body&gt;</code> (или <code>[c-view]</code>). Так можно превратить в SPA и существующий многостраничный сайт.</p>
+  <p c-lang="en">Full HTML documents (<code>&lt;html&gt;…&lt;/html&gt;</code>) work too — Comet takes the contents of <code>&lt;body&gt;</code> (or <code>[c-view]</code>). So an existing multi-page site can become an SPA.</p>
+
+  <h2 id="links"><span c-lang="uz">Havolalar</span><span c-lang="ru">Ссылки</span><span c-lang="en">Links</span></h2>
+  <p c-lang="uz">Oddiy <code>&lt;a href&gt;</code> ishlating — Comet ichki havolalarni o'zi ushlaydi. Tashqi havolalar, <code>target="_blank"</code>, <code>download</code>, fayllar (<code>.pdf</code>, <code>.zip</code>) va <code>c-reload</code> qo'yilganlar odatdagidek ochiladi.</p>
+  <p c-lang="ru">Используйте обычные <code>&lt;a href&gt;</code> — Comet сам перехватывает внутренние ссылки. Внешние, <code>target="_blank"</code>, <code>download</code>, файлы (<code>.pdf</code>, <code>.zip</code>) и ссылки с <code>c-reload</code> открываются как обычно.</p>
+  <p c-lang="en">Use plain <code>&lt;a href&gt;</code> — Comet intercepts internal links. External links, <code>target="_blank"</code>, <code>download</code>, files (<code>.pdf</code>, <code>.zip</code>) and links with <code>c-reload</code> behave normally.</p>
+  <div c-code="html"><script type="text/plain">
+    <a href="about" c-active="text-violet-500 font-bold">About</a>     <!-- class when route matches -->
+    <a href="docs" c-active.prefix="active">Docs</a>                    <!-- also matches /docs/* -->
+    <a href="#pricing">Pricing</a>                                       <!-- in-page anchor, smooth scroll -->
+    <button @click="$nav('/checkout')">Checkout</button>                 <!-- programmatic -->
+    <button @click="$back()">← Back</button>
+  </script></div>
+  <div class="callout"><b>⚡</b>
+    <p c-lang="uz"><b>Prefetch:</b> sichqoncha havola ustiga kelganda (yoki telefonda tegilganda) sahifa oldindan yuklanadi, shuning uchun bosilganda deyarli darhol ochiladi. O'chirish: <code>Comet.config({ prefetch: false })</code>.</p>
+    <p c-lang="ru"><b>Prefetch:</b> при наведении (или касании на телефоне) страница загружается заранее, поэтому клик открывает её почти мгновенно. Отключить: <code>Comet.config({ prefetch: false })</code>.</p>
+    <p c-lang="en"><b>Prefetch:</b> pages load on hover (or touch start on phones), so clicks feel instant. Disable with <code>Comet.config({ prefetch: false })</code>.</p>
+  </div>
+
+  <h2 id="params"><span c-lang="uz">Dinamik manzillar</span><span c-lang="ru">Динамические маршруты</span><span c-lang="en">Dynamic routes</span></h2>
+  <p c-lang="uz">Brauzer papkadagi fayllar ro'yxatini ko'ra olmaydi, shuning uchun parametrli manzillarni bir marta e'lon qiling:</p>
+  <p c-lang="ru">Браузер не видит список файлов в папке, поэтому маршруты с параметрами объявляются один раз:</p>
+  <p c-lang="en">The browser can't list folder contents, so routes with parameters are declared once:</p>
+  <div c-code="html" data-file="index.html"><script type="text/plain">
+    <script type="comet/routes">
+    {
+      "/users/:id": "pages/users/show.html",
+      "/blog/:slug": "pages/blog/post.html",
+      "/files/*": "pages/files.html"
+    }
+    <\/script>
+  </script></div>
+  <div c-code="html" data-file="pages/users/show.html"><script type="text/plain">
+    <div c-get="/api/users/{{ $route.params.id }}" c-as="user">
+      <h1>{{ user?.name }}</h1>
+      <p>Tab: {{ $route.query.tab || 'overview' }}</p>
+    </div>
+  </script></div>
+  <p c-lang="uz"><code>$route</code> — reaktiv obyekt: <code>path</code>, <code>params</code>, <code>query</code>, <code>hash</code>, <code>status</code>.</p>
+  <p c-lang="ru"><code>$route</code> — реактивный объект: <code>path</code>, <code>params</code>, <code>query</code>, <code>hash</code>, <code>status</code>.</p>
+  <p c-lang="en"><code>$route</code> is reactive: <code>path</code>, <code>params</code>, <code>query</code>, <code>hash</code>, <code>status</code>.</p>
+
+  <h2 id="layouts"><span c-lang="uz">Layoutlar</span><span c-lang="ru">Лейауты</span><span c-lang="en">Layouts</span></h2>
+  <p c-lang="uz">Sahifa <code>c-layout="docs"</code> belgisini qo'ysa, <code>layouts/docs.html</code> yuklanadi va sahifa uning <code>c-outlet</code> elementiga joylanadi. Bir xil layoutli sahifalar orasida o'tganda layout (masalan, sidebar va uning skroll holati) <b>qayta chizilmaydi</b>. Bu docs sayti aynan shunday qurilgan.</p>
+  <p c-lang="ru">Если страница помечена <code>c-layout="docs"</code>, загружается <code>layouts/docs.html</code>, а страница вставляется в его <code>c-outlet</code>. При переходе между страницами одного лейаута он (сайдбар и его прокрутка) <b>не перерисовывается</b>. Эта документация устроена именно так.</p>
+  <p c-lang="en">When a page is marked <code>c-layout="docs"</code>, <code>layouts/docs.html</code> is loaded and the page renders into its <code>c-outlet</code>. Navigating between pages with the same layout does <b>not</b> re-render it (the sidebar keeps its scroll). These docs are built exactly like that.</p>
+  <div c-code="html" data-file="layouts/docs.html"><script type="text/plain">
+    <div class="docs">
+      <aside>…sidebar…</aside>
+      <article c-outlet></article>
+    </div>
+  </script></div>
+  <div c-code="html" data-file="pages/docs/intro.html"><script type="text/plain">
+    <div c-layout="docs">
+      <h1>Introduction</h1>
+    </div>
+  </script></div>
+
+  <h2 id="guards"><span c-lang="uz">Guard va hooklar</span><span c-lang="ru">Guard'ы и хуки</span><span c-lang="en">Guards &amp; hooks</span></h2>
+  <div c-code="js"><script type="text/plain">
+    Comet.router.before((to, from) => {
+      if (to.path.startsWith('/admin') && !Comet.store('auth').user) return '/login'; // redirect
+      // return false to cancel navigation
+    });
+    Comet.router.after((to) => analytics.track('pageview', to.path));
+
+    document.addEventListener('comet:navigate', (e) => console.log(e.detail.to.path));
+  </script></div>
+
+  <h2 id="transitions"><span c-lang="uz">O'tish animatsiyalari</span><span c-lang="ru">Анимации переходов</span><span c-lang="en">Page transitions</span></h2>
+  <p c-lang="uz">Brauzer qo'llasa, sahifalar <b>View Transitions API</b> bilan almashadi. CSS orqali sozlang yoki <code>&lt;main c-view c-transition="none"&gt;</code> bilan o'chiring. Uzoq yuklanishlarda yuqorida ingichka progress chizig'i paydo bo'ladi (<code>--c-progress</code> o'zgaruvchisi bilan rangini o'zgartiring).</p>
+  <p c-lang="ru">Если браузер поддерживает, страницы меняются через <b>View Transitions API</b>. Настройте через CSS или отключите: <code>&lt;main c-view c-transition="none"&gt;</code>. При долгой загрузке сверху появляется тонкая полоса прогресса (цвет — переменная <code>--c-progress</code>).</p>
+  <p c-lang="en">Where supported, pages swap using the <b>View Transitions API</b>. Customize with CSS or disable with <code>&lt;main c-view c-transition="none"&gt;</code>. Slow loads show a thin progress bar (color it with <code>--c-progress</code>).</p>
+  <div c-code="css"><script type="text/plain">
+    ::view-transition-old(root) { animation: fade-out .15s ease both; }
+    ::view-transition-new(root) { animation: slide-in .25s ease both; }
+  </script></div>
+
+  <h2 id="options"><span c-lang="uz">Sozlamalar</span><span c-lang="ru">Опции</span><span c-lang="en">Options</span></h2>
+  <table>
+    <tr><td><code>&lt;main c-view="views/"&gt;</code></td><td><span c-lang="uz">Sahifalar papkasi</span><span c-lang="ru">Папка страниц</span><span c-lang="en">Pages folder</span></td></tr>
+    <tr><td><code>c-layouts="ui/layouts/"</code></td><td><span c-lang="uz">Layoutlar papkasi</span><span c-lang="ru">Папка лейаутов</span><span c-lang="en">Layouts folder</span></td></tr>
+    <tr><td><code>Comet.config({ title: '%s — Brand' })</code></td><td><span c-lang="uz">Sarlavha shabloni</span><span c-lang="ru">Шаблон заголовка</span><span c-lang="en">Title template</span></td></tr>
+    <tr><td><code>&lt;base href="/app/"&gt;</code></td><td><span c-lang="uz">Sayt ichki papkada joylashganda</span><span c-lang="ru">Если сайт лежит в подпапке</span><span c-lang="en">When hosted in a sub-folder</span></td></tr>
+  </table>
+</div>

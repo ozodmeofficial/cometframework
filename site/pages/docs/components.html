@@ -1,0 +1,113 @@
+<title>Components</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Komponentlar</span><span c-lang="ru">Компоненты</span><span c-lang="en">Components</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Qayta ishlatiladigan UI bo'laklari: alohida <code>.html</code> fayl yoki sahifa ichidagi <code>&lt;template&gt;</code>. Kompilyator yo'q.</span>
+    <span c-lang="ru">Переиспользуемые части UI: отдельный файл <code>.html</code> или <code>&lt;template&gt;</code> на странице. Без компилятора.</span>
+    <span c-lang="en">Reusable UI pieces: a separate <code>.html</code> file or an inline <code>&lt;template&gt;</code>. No compiler.</span>
+  </p>
+
+  <h2 id="inline"><span c-lang="uz">Inline komponent</span><span c-lang="ru">Встроенный компонент</span><span c-lang="en">Inline component</span></h2>
+  <div c-code="html"><script type="text/plain">
+    <template c-component="user-card" c-props="name, role">
+      <div class="card">
+        <b>{{ name }}</b> <small>{{ role }}</small>
+        <slot></slot>
+      </div>
+    </template>
+
+    <user-card name="Aziza" role="admin">Joined in 2024</user-card>
+    <user-card :name="user.name" :role="user.role"></user-card>
+  </script></div>
+  <template c-component="demo-card" c-props="name, role">
+    <div class="mini-list"><li><b>{{ name }}</b><small>{{ role }}</small></li><slot></slot></div>
+  </template>
+  <div class="demo-box">
+    <div class="live-label">Live</div>
+    <demo-card name="Aziza" role="admin"></demo-card>
+    <demo-card name="Timur" role="editor"></demo-card>
+  </div>
+
+  <h2 id="files"><span c-lang="uz">Fayl komponentlar</span><span c-lang="ru">Компоненты в файлах</span><span c-lang="en">File components</span></h2>
+  <p c-lang="uz">Komponent birinchi marta sahifada uchraganda fayl yuklanadi (lazy) va keshlanadi.</p>
+  <p c-lang="ru">Файл загружается, когда компонент впервые встречается на странице (лениво), и кэшируется.</p>
+  <p c-lang="en">The file is fetched the first time the component appears (lazy) and cached.</p>
+  <div c-code="html" data-file="components/like-button.html"><script type="text/plain">
+    <template>
+      <button class="like" :class="{ on: liked }" @click="toggle">
+        ♥ {{ count }}
+      </button>
+    </template>
+
+    <script>
+      export default ({ props, emit }) => ({
+        liked: false,
+        count: Number(props.start || 0),
+        toggle() {
+          this.liked = !this.liked;
+          this.count += this.liked ? 1 : -1;
+          emit('change', this.liked);
+        },
+      })
+    <\/script>
+
+    <style scoped>
+      .like { border-radius: 99px; }
+      .like.on { color: crimson; }
+    </style>
+  </script></div>
+  <div c-code="html" data-file="index.html"><script type="text/plain">
+    <script>
+      Comet.component('like-button', 'components/like-button.html');
+      // or: auto-load any unknown <tag-name> from a folder
+      Comet.config({ components: 'components/' });
+    <\/script>
+
+    <like-button start="5" @change="console.log('liked?', $event.detail)"></like-button>
+  </script></div>
+
+  <h2 id="props"><span c-lang="uz">Props</span><span c-lang="ru">Props</span><span c-lang="en">Props</span></h2>
+  <ul>
+    <li c-lang="uz">Statik atribut → matn: <code>title="Salom"</code>. Dinamik → ifoda: <code>:count="n + 1"</code> (reaktiv).</li>
+    <li c-lang="ru">Статический атрибут → строка: <code>title="Привет"</code>. Динамический → выражение: <code>:count="n + 1"</code> (реактивно).</li>
+    <li c-lang="en">Static attribute → string: <code>title="Hi"</code>. Dynamic → expression: <code>:count="n + 1"</code> (reactive).</li>
+    <li c-lang="uz">Shablonda prop'larga to'g'ridan-to'g'ri (<code>title</code>) yoki <code>$props.title</code> orqali murojaat qilinadi.</li>
+    <li c-lang="ru">В шаблоне props доступны напрямую (<code>title</code>) или через <code>$props.title</code>.</li>
+    <li c-lang="en">In the template, props are available directly (<code>title</code>) or via <code>$props.title</code>.</li>
+    <li c-lang="uz"><code>class</code>, <code>style</code>, <code>id</code>, <code>data-*</code>, <code>aria-*</code> va <code>@hodisalar</code> ildiz elementga o'tadi (fallthrough).</li>
+    <li c-lang="ru"><code>class</code>, <code>style</code>, <code>id</code>, <code>data-*</code>, <code>aria-*</code> и <code>@события</code> переходят на корневой элемент.</li>
+    <li c-lang="en"><code>class</code>, <code>style</code>, <code>id</code>, <code>data-*</code>, <code>aria-*</code> and <code>@events</code> fall through to the root element.</li>
+  </ul>
+
+  <h2 id="slots"><span c-lang="uz">Slotlar</span><span c-lang="ru">Слоты</span><span c-lang="en">Slots</span></h2>
+  <div c-code="html"><script type="text/plain">
+    <!-- inside the component -->
+    <div class="modal">
+      <header><slot name="title">Default title</slot></header>
+      <slot></slot>
+      <footer><slot name="actions"></slot></footer>
+    </div>
+
+    <!-- usage: slot content keeps the PARENT's scope -->
+    <app-modal>
+      <h3 slot="title">Delete {{ file.name }}?</h3>
+      <p>This cannot be undone.</p>
+      <template slot="actions">
+        <button @click="cancel">Cancel</button>
+        <button @click="confirm">Delete</button>
+      </template>
+    </app-modal>
+  </script></div>
+
+  <h2 id="styling"><span c-lang="uz">Uslublar</span><span c-lang="ru">Стили</span><span c-lang="en">Styling</span></h2>
+  <p c-lang="uz">Komponentlar <b>light DOM</b>'da chiziladi (Shadow DOM emas), shuning uchun Tailwind, Bootstrap va global CSS ichkarida ham ishlaydi. <code>&lt;style scoped&gt;</code> esa faqat shu komponentga ta'sir qiladi.</p>
+  <p c-lang="ru">Компоненты рендерятся в <b>light DOM</b> (не Shadow DOM), поэтому Tailwind, Bootstrap и глобальный CSS работают внутри. <code>&lt;style scoped&gt;</code> влияет только на этот компонент.</p>
+  <p c-lang="en">Components render into the <b>light DOM</b> (not Shadow DOM), so Tailwind, Bootstrap and global CSS work inside. <code>&lt;style scoped&gt;</code> only affects that component.</p>
+
+  <h2 id="include"><span c-lang="uz">HTML qismlarni ulash</span><span c-lang="ru">Подключение фрагментов</span><span c-lang="en">Including partials</span></h2>
+  <div c-code="html"><script type="text/plain">
+    <c-include src="partials/footer.html"></c-include>        <!-- replaced by the file -->
+    <c-include src="partials/comments.html" lazy></c-include> <!-- loads when visible -->
+    <div c-include="partials/{{ tab }}.html"></div>            <!-- reactive -->
+  </script></div>
+</div>

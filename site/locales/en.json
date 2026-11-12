@@ -1,0 +1,6 @@
+{
+  "nav": { "docs": "Docs", "examples": "Examples", "roadmap": "Roadmap", "search": "Search docs", "start": "Get started" },
+  "palette": { "placeholder": "Search the docs…", "empty": "Nothing found" },
+  "docs": { "prev": "Previous", "next": "Next", "onthis": "On this page", "menu": "Menu", "edit": "Edit this page on GitHub" },
+  "footer": { "tagline": "The build-free web framework. One script tag — everything included.", "learn": "Learn", "project": "Project", "quick": "Quick start", "compare": "Comparison", "issues": "Issues", "made": "Built with Comet itself — no build step." }
+}

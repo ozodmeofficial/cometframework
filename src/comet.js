@@ -359,14 +359,16 @@
     return el.__c_emit || (el.__c_emit = (name, detail) => emit(el, name, detail));
   }
 
+  const needsEmit = (exp) => exp.indexOf('$emit') > -1 || exp.indexOf('$dispatch') > -1;
   function evaluate(scope, exp, el, event) {
-    try { return compile(exp)(scope, el, event, emitter(el || html), emitter(el || html)); }
+    try { const em = needsEmit(exp) ? emitter(el || html) : null; return compile(exp)(scope, el, event, em, em); }
     catch (e) { warn(`Error in expression "${exp}"`, el, e); }
   }
 
   function run(scope, exp, el, event) {
     try {
-      const r = compileHandler(exp)(scope, el, event, emitter(el || html), emitter(el || html));
+      const em = emitter(el || html);
+      const r = compileHandler(exp)(scope, el, event, em, em);
       if (r && isFn(r.then)) r.catch((e) => warn(`Error in handler "${exp}"`, el, e));
       return r;
     } catch (e) { warn(`Error in handler "${exp}"`, el, e); }
@@ -448,6 +450,13 @@
     if (processed.has(el)) return next;
     const tag = el.tagName;
     if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT') return next;
+    if (!el.attributes.length && tag.indexOf('-') < 0 && tag !== 'TEMPLATE') {
+      // fast path: plain element without attributes — just walk children
+      processed.add(el);
+      let c = el.firstChild;
+      while (c) c = walk(c, scope);
+      return next;
+    }
     if (el.hasAttribute('c-ignore')) return next;
     if (el.hasAttribute('c-pre')) { markTree(el); return next; }
     if (el.hasAttribute('c-lazy') && tag !== 'IMG' && tag !== 'IFRAME') return deferLazy(el, scope, next);
@@ -471,7 +480,7 @@
     for (const m of HTTP_METHODS) {
       if (el.hasAttribute('c-' + m)) { scope = dirHttp(el, m, scope); break; }
     }
-    if (el.hasAttribute('c-live')) scope = dirLive(el, scope);
+    if (el.hasAttribute('c-live') || hasAttrPrefix(el, 'c-live.')) scope = dirLive(el, scope);
 
     processAttrs(el, scope);
 
@@ -522,7 +531,7 @@
         if (SKIP_DIRS.has(p.dir)) continue;
         const fn = directives[p.dir];
         if (fn) {
-          try { fn({ el, value, arg: p.arg, mods: p.mods, scope, name, evaluate: () => evaluate(scope, value, el), effect, cleanup: onCleanup }); }
+          try { fn({ el, value, arg: p.arg, mods: p.mods, scope, name, evaluate: () => evaluate(scope, value, el), run: (e) => run(scope, value, el, e), effect, cleanup: onCleanup, skip: () => { el.__c_skipChildren = true; } }); }
           catch (e) { warn(`Directive ${name} failed`, el, e); }
         }
       } else if (value.indexOf('{{') > -1) {
@@ -777,12 +786,12 @@
 
   directives.show = ({ el, value, scope }) => {
     const orig = el.style.display === 'none' ? '' : el.style.display;
-    const tr = transitionName(el);
     let first = true, token = 0;
     effect(() => {
       const v = !!evaluate(scope, value, el);
       untrack(() => {
         const t = ++token;
+        const tr = transitionName(el);
         if (first || !tr) { el.style.display = v ? orig : 'none'; first = false; return; }
         if (v) { el.style.display = orig; enter(el, tr); }
         else leave(el, tr, () => { if (t === token) el.style.display = 'none'; });
@@ -1059,12 +1068,14 @@
     }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
   }
   directives.reveal = ({ el, value, mods }) => {
+    if (!el.hasAttribute('c-reveal')) el.setAttribute('c-reveal', value || '');
     const parts = (value || '').trim().split(/\s+/);
     const delay = parseTime(parts.find((p) => /^\d/.test(p)), 0);
     if (delay) el.style.setProperty('--c-delay', delay + 'ms');
     revealOn(el, [el], mods.includes('repeat'), delay);
   };
   directives.stagger = ({ el, value, mods }) => {
+    if (!el.hasAttribute('c-stagger')) el.setAttribute('c-stagger', value || '');
     const parts = (value || '').trim().split(/\s+/);
     const step = parseTime(parts.find((p) => /^\d/.test(p)), 80);
     const kids = [...el.children];
@@ -1712,7 +1723,7 @@
       [`GET ${base}`]: async ({ query }) => {
         let q = table().query();
         const { _sort, _order, _limit, _page, _q, q: search, ...filters } = query;
-        for (const k in filters) q = q.where({ [k]: coerce(filters[k]) });
+        for (const k in filters) if (filters[k] !== '') q = q.where({ [k]: coerce(filters[k]) });
         if (search || _q) q = q.search(search || _q);
         if (_sort) q = q.orderBy(_sort, _order || 'asc');
         if (_limit) { q = q.limit(+_limit); if (_page) q = q.offset((+_page - 1) * +_limit); }
@@ -2247,6 +2258,16 @@
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     doc.addEventListener('click', (e) => {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a0 = e.target.closest && e.target.closest('a[href]');
+      const rawHref = a0 && a0.getAttribute('href');
+      if (rawHref && rawHref[0] === '#' && rawHref.length > 1 && !a0.closest('[c-ignore]')) {
+        e.preventDefault();
+        const u = new URL(location.href); u.hash = rawHref;
+        if (u.hash !== location.hash) history.pushState({ scroll: global.scrollY }, '', u.href);
+        router.route.hash = u.hash;
+        scrollToHash(u.hash);
+        return;
+      }
       const url = linkFrom(e);
       if (!url) return;
       e.preventDefault();

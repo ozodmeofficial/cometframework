@@ -1,0 +1,56 @@
+<title>Realtime</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Real vaqt — c-live</span><span c-lang="ru">Реальное время — c-live</span><span c-lang="en">Realtime — c-live</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">WebSocket, Server-Sent Events yoki tablar orasidagi BroadcastChannel — bitta atribut.</span>
+    <span c-lang="ru">WebSocket, Server-Sent Events или BroadcastChannel между вкладками — одним атрибутом.</span>
+    <span c-lang="en">WebSocket, Server-Sent Events or BroadcastChannel between tabs — one attribute.</span>
+  </p>
+
+  <h2 id="sources"><span c-lang="uz">Manbalar</span><span c-lang="ru">Источники</span><span c-lang="en">Sources</span></h2>
+  <table>
+    <tr><td><code>c-live="/events"</code></td><td>Server-Sent Events (EventSource)</td></tr>
+    <tr><td><code>c-live="wss://host/socket"</code></td><td><span c-lang="uz">WebSocket, avtomatik qayta ulanish (backoff)</span><span c-lang="ru">WebSocket с автоматическим переподключением (backoff)</span><span c-lang="en">WebSocket with automatic reconnect (backoff)</span></td></tr>
+    <tr><td><code>c-live="broadcast:chat"</code></td><td><span c-lang="uz">Bir saytning tablari orasida (server kerak emas)</span><span c-lang="ru">Между вкладками одного сайта (сервер не нужен)</span><span c-lang="en">Between tabs of the same site (no server)</span></td></tr>
+  </table>
+
+  <h2 id="usage"><span c-lang="uz">Foydalanish</span><span c-lang="ru">Использование</span><span c-lang="en">Usage</span></h2>
+  <div c-code="html"><script type="text/plain">
+    <!-- each message is appended to "messages" (keep the last 100) -->
+    <div c-live.append="wss://chat.example.com" c-as="messages" c-max="100">
+      <p c-show="!$connected">Reconnecting…</p>
+      <div c-for="m in messages">{{ m.user }}: {{ m.text }}</div>
+      <form @submit.prevent="$send({ user: me, text }); text = ''">…</form>
+    </div>
+
+    <!-- replace mode: always the latest value -->
+    <span c-live="/sse/price" c-as="price">{{ price?.usd }}</span>
+
+    <!-- merge mode + side effect per message -->
+    <div c-live.merge="/sse/dashboard" c-as="stats" c-message="$toast('Updated')">…</div>
+  </script></div>
+  <table>
+    <tr><td><code>$connected</code></td><td><span c-lang="uz">Ulanish holati</span><span c-lang="ru">Статус соединения</span><span c-lang="en">Connection status</span></td></tr>
+    <tr><td><code>$send(data)</code></td><td><span c-lang="uz">Xabar yuborish (WebSocket / broadcast)</span><span c-lang="ru">Отправить сообщение (WebSocket / broadcast)</span><span c-lang="en">Send a message (WebSocket / broadcast)</span></td></tr>
+    <tr><td><code>$message</code></td><td><span c-lang="uz">Oxirgi xabar</span><span c-lang="ru">Последнее сообщение</span><span c-lang="en">The last message</span></td></tr>
+  </table>
+  <p c-lang="uz">JSON xabarlar avtomatik parse qilinadi. Element sahifadan olib tashlanganda ulanish yopiladi.</p>
+  <p c-lang="ru">JSON-сообщения разбираются автоматически. Соединение закрывается, когда элемент удаляется со страницы.</p>
+  <p c-lang="en">JSON messages are parsed automatically. The connection closes when the element leaves the page.</p>
+
+  <h2 id="demo">Demo</h2>
+  <p c-lang="uz">Bu sahifani ikkita tabda oching va yozing:</p>
+  <p c-lang="ru">Откройте эту страницу в двух вкладках и напишите:</p>
+  <p c-lang="en">Open this page in two tabs and type:</p>
+  <div class="demo-box" c-live.append="broadcast:comet-docs-chat" c-as="messages" c-max="50" c-data="{ text: '', me: 'Tab ' + Math.floor(Math.random() * 900 + 100) }">
+    <div class="live-label">Live — BroadcastChannel</div>
+    <div class="chat">
+      <p c-show="!messages.length" style="color:var(--muted);margin:auto">No messages yet</p>
+      <div c-for="m in messages" class="msg" :class="{ me: m.user === me }"><small>{{ m.user }}</small>{{ m.text }}</div>
+    </div>
+    <form class="row" @submit.prevent="text.trim() && $send({ user: me, text }); text = ''">
+      <input class="mini-input" c-model="text" :placeholder="'Message as ' + me">
+      <button class="btn btn-primary btn-sm" style="height:42px">Send</button>
+    </form>
+  </div>
+</div>

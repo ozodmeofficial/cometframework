@@ -1,0 +1,80 @@
+<title>Installation</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">O'rnatish</span><span c-lang="ru">Установка</span><span c-lang="en">Installation</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Comet'ni o'rnatish — bu bitta qator. npm, Node.js yoki terminal shart emas.</span>
+    <span c-lang="ru">Установка Comet — это одна строка. npm, Node.js и терминал не нужны.</span>
+    <span c-lang="en">Installing Comet is one line. No npm, no Node.js, no terminal required.</span>
+  </p>
+
+  <h2 id="cdn">CDN</h2>
+  <p c-lang="uz">Skriptni <code>&lt;head&gt;</code> ichiga, <b>defer'siz</b> qo'shing. U juda kichik va sahifa chizilishidan oldin dark mode va <code>c-cloak</code>'ni qo'llaydi (miltillash bo'lmaydi).</p>
+  <p c-lang="ru">Добавьте скрипт в <code>&lt;head&gt;</code> <b>без defer</b>. Он небольшой и применяет тёмную тему и <code>c-cloak</code> до отрисовки (без мерцания).</p>
+  <p c-lang="en">Put the script in <code>&lt;head&gt;</code>, <b>without defer</b>. It is small and applies dark mode and <code>c-cloak</code> before the first paint (no flash).</p>
+  <div c-code="html"><script type="text/plain">
+    <!-- latest from the main branch -->
+    <script src="https://cdn.jsdelivr.net/gh/ozodmeofficial/cometframework@main/dist/comet.min.js"><\/script>
+
+    <!-- pinned version (recommended for production) -->
+    <script src="https://cdn.jsdelivr.net/gh/ozodmeofficial/cometframework@v0.1.0/dist/comet.min.js"><\/script>
+
+    <!-- readable, unminified build for debugging -->
+    <script src="https://cdn.jsdelivr.net/gh/ozodmeofficial/cometframework@main/dist/comet.js"><\/script>
+  </script></div>
+  <div class="callout"><b>💡</b>
+    <p c-lang="uz">Ishlab chiqarishda versiyani qotiring (<code>@v0.1.0</code>). <code>@main</code> har doim eng so'nggi kodni beradi, jsDelivr uni bir necha soatgacha keshlashi mumkin.</p>
+    <p c-lang="ru">В продакшене фиксируйте версию (<code>@v0.1.0</code>). <code>@main</code> всегда отдаёт последний код, jsDelivr может кэшировать его до нескольких часов.</p>
+    <p c-lang="en">Pin a version in production (<code>@v0.1.0</code>). <code>@main</code> always serves the latest code and jsDelivr may cache it for a few hours.</p>
+  </div>
+
+  <h2 id="download"><span c-lang="uz">Yuklab olish</span><span c-lang="ru">Скачать файл</span><span c-lang="en">Self-hosting</span></h2>
+  <p c-lang="uz">Faylni loyihangizga ko'chirib, lokal ulashingiz ham mumkin — internet kerak bo'lmaydi.</p>
+  <p c-lang="ru">Можно скопировать файл в проект и подключить локально — интернет не нужен.</p>
+  <p c-lang="en">You can also copy the file into your project and load it locally — no internet needed.</p>
+  <div c-code="bash"><script type="text/plain">
+    curl -o comet.min.js https://cdn.jsdelivr.net/gh/ozodmeofficial/cometframework@main/dist/comet.min.js
+  </script></div>
+
+  <h2 id="structure"><span c-lang="uz">Loyiha tuzilmasi</span><span c-lang="ru">Структура проекта</span><span c-lang="en">Project structure</span></h2>
+  <p c-lang="uz">Comet hech qanday tuzilmani majburlamaydi. Ammo SPA router ishlatsangiz, quyidagi konvensiya qulay:</p>
+  <p c-lang="ru">Comet не навязывает структуру. Но если вы используете SPA-роутер, удобна такая конвенция:</p>
+  <p c-lang="en">Comet doesn't force any structure. If you use the SPA router, this convention works well:</p>
+  <div c-code="text" data-file="my-app/"><script type="text/plain">
+    my-app/
+    ├── index.html          ← the only file with the <script> tag
+    ├── pages/
+    │   ├── index.html      → /
+    │   ├── about.html      → /about
+    │   ├── 404.html        → unknown routes
+    │   └── blog/
+    │       └── index.html  → /blog
+    ├── layouts/
+    │   └── docs.html       → c-layout="docs"
+    ├── components/
+    │   └── user-card.html  → <user-card>
+    └── assets/
+        └── style.css
+  </script></div>
+
+  <h2 id="local-server"><span c-lang="uz">Lokal server</span><span c-lang="ru">Локальный сервер</span><span c-lang="en">Local server</span></h2>
+  <p c-lang="uz">Router va komponentlar fayllarni <code>fetch</code> qiladi, shuning uchun sahifani <code>file://</code> orqali emas, istalgan statik server orqali oching:</p>
+  <p c-lang="ru">Роутер и компоненты загружают файлы через <code>fetch</code>, поэтому открывайте страницу не через <code>file://</code>, а через любой статический сервер:</p>
+  <p c-lang="en">The router and components load files with <code>fetch</code>, so open the page through any static server instead of <code>file://</code>:</p>
+  <div c-code="bash"><script type="text/plain">
+    # any of these works
+    npx serve -s .
+    python3 -m http.server 8080
+    php -S localhost:8080
+    # or the "Live Server" extension in VS Code
+  </script></div>
+  <p c-lang="uz"><code>-s</code> (single-page) bayrog'i noma'lum manzillarda <code>index.html</code>'ni qaytaradi. Bu chuqur havolalar (deep links) uchun kerak — batafsil <a href="docs/deploy">Deploy</a> bo'limida.</p>
+  <p c-lang="ru">Флаг <code>-s</code> (single-page) отдаёт <code>index.html</code> для неизвестных адресов — это нужно для глубоких ссылок. Подробнее — в разделе <a href="docs/deploy">Деплой</a>.</p>
+  <p c-lang="en">The <code>-s</code> (single-page) flag serves <code>index.html</code> for unknown paths — needed for deep links. See <a href="docs/deploy">Deployment</a>.</p>
+
+  <h2 id="options"><span c-lang="uz">Script sozlamalari</span><span c-lang="ru">Опции скрипта</span><span c-lang="en">Script options</span></h2>
+  <table>
+    <tr><th>Attribute</th><th><span c-lang="uz">Vazifasi</span><span c-lang="ru">Назначение</span><span c-lang="en">What it does</span></th></tr>
+    <tr><td><code>data-manual</code></td><td><span c-lang="uz">Avtomatik ishga tushmaydi — <code>Comet.start()</code>'ni o'zingiz chaqirasiz.</span><span c-lang="ru">Не запускается сам — вызовите <code>Comet.start()</code> вручную.</span><span c-lang="en">Don't auto-start — call <code>Comet.start()</code> yourself.</span></td></tr>
+    <tr><td><code>data-devtools</code></td><td><span c-lang="uz">Devtools panelini darhol ochadi.</span><span c-lang="ru">Сразу открывает панель devtools.</span><span c-lang="en">Opens the devtools panel on load.</span></td></tr>
+  </table>
+</div>

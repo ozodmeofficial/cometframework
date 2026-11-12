@@ -1,0 +1,114 @@
+<title>State & reactivity</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Holat va reaktivlik</span><span c-lang="ru">Состояние и реактивность</span><span c-lang="en">State &amp; reactivity</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Comet'da holat — oddiy JavaScript obyekt. Uni o'zgartirasiz, UI o'zi yangilanadi.</span>
+    <span c-lang="ru">Состояние в Comet — обычный JavaScript-объект. Меняете его — UI обновляется сам.</span>
+    <span c-lang="en">State in Comet is a plain JavaScript object. Change it, and the UI updates itself.</span>
+  </p>
+
+  <h2 id="c-data">c-data</h2>
+  <p c-lang="uz"><code>c-data</code> reaktiv qamrov (scope) yaratadi. Ichki elementlar unga murojaat qila oladi. Getterlar <b>computed</b> qiymat bo'ladi, metodlar ichida <code>this</code> holatga ishora qiladi.</p>
+  <p c-lang="ru"><code>c-data</code> создаёт реактивную область (scope). Вложенные элементы видят её данные. Геттеры работают как <b>computed</b>, в методах <code>this</code> указывает на состояние.</p>
+  <p c-lang="en"><code>c-data</code> creates a reactive scope that nested elements can read. Getters act as <b>computed</b> values; inside methods, <code>this</code> is the state.</p>
+  <div c-code="html"><script type="text/plain">
+    <div c-data="{
+      items: [],
+      draft: '',
+      get count() { return this.items.length },
+      add() { this.items.push(this.draft); this.draft = '' },
+      init() { console.log('mounted!') },      // called after mount
+      destroy() { console.log('removed') },    // called on teardown
+    }">
+      <input c-model="draft" @keydown.enter="add">
+      <p>{{ count }} items</p>
+    </div>
+  </script></div>
+
+  <h3><span c-lang="uz">Ichma-ich qamrovlar</span><span c-lang="ru">Вложенные области</span><span c-lang="en">Nested scopes</span></h3>
+  <p c-lang="uz">Ichki <code>c-data</code> tashqi qamrovdagi o'zgaruvchilarni ko'radi va ularga yoza oladi.</p>
+  <p c-lang="ru">Вложенный <code>c-data</code> видит переменные внешней области и может их изменять.</p>
+  <p c-lang="en">An inner <code>c-data</code> can read — and write — variables of outer scopes.</p>
+  <div c-code="html"><script type="text/plain">
+    <div c-data="{ theme: 'dark' }">
+      <div c-data="{ open: false }">
+        <button @click="theme = theme === 'dark' ? 'light' : 'dark'">{{ theme }}</button>
+      </div>
+    </div>
+  </script></div>
+
+  <h3><span c-lang="uz">Qayta ishlatiladigan holat</span><span c-lang="ru">Переиспользуемое состояние</span><span c-lang="en">Reusable state</span></h3>
+  <div c-code="html"><script type="text/plain">
+    <script>
+      Comet.data('counter', (start = 0) => ({
+        n: start,
+        inc() { this.n++ },
+      }))
+    <\/script>
+
+    <div c-data="counter(10)"><button @click="inc">{{ n }}</button></div>
+    <div c-data="counter">…</div>
+  </script></div>
+
+  <h2 id="stores"><span c-lang="uz">Global store</span><span c-lang="ru">Глобальные store</span><span c-lang="en">Global stores</span></h2>
+  <p c-lang="uz">Sahifaning turli qismlari bitta holatni ulashishi kerak bo'lsa (savat, foydalanuvchi, sozlamalar), store ishlating. <code>persist: true</code> uni localStorage'da saqlaydi.</p>
+  <p c-lang="ru">Если разным частям страницы нужно общее состояние (корзина, пользователь, настройки), используйте store. <code>persist: true</code> сохраняет его в localStorage.</p>
+  <p c-lang="en">When different parts of the page share state (cart, user, settings), use a store. <code>persist: true</code> saves it to localStorage.</p>
+  <div c-code="html"><script type="text/plain">
+    <script>
+      Comet.store('cart', {
+        items: [],
+        get total() { return this.items.reduce((s, i) => s + i.price, 0) },
+        add(item) { this.items.push(item) },
+      }, { persist: true })
+    <\/script>
+
+    <button @click="$store.cart.add({ name: 'Book', price: 12 })">Add</button>
+    <span>🛒 {{ $store.cart.items.length }} · {{ $fmt.currency($store.cart.total) }}</span>
+  </script></div>
+  <div class="demo-box">
+    <div class="live-label">Live — $store.ui</div>
+    <button class="btn btn-sm" @click="$store.ui.palette = true">$store.ui.palette = true</button>
+    <span style="color:var(--muted);font-size:14px;margin-left:8px">(opens the search palette, which lives in another part of the page)</span>
+  </div>
+
+  <h2 id="persist">c-persist</h2>
+  <p c-lang="uz"><code>c-persist</code> qo'shilgan <code>c-data</code> localStorage bilan avtomatik sinxronlanadi, hatto tablar orasida ham. <code>c-persist.session</code> — sessionStorage.</p>
+  <p c-lang="ru"><code>c-data</code> с <code>c-persist</code> автоматически синхронизируется с localStorage, даже между вкладками. <code>c-persist.session</code> — sessionStorage.</p>
+  <p c-lang="en">A <code>c-data</code> with <code>c-persist</code> auto-syncs to localStorage — even across tabs. <code>c-persist.session</code> uses sessionStorage.</p>
+  <div c-code="html"><script type="text/plain">
+    <div c-data="{ draft: '', fontSize: 16 }" c-persist="editor-settings">
+      <textarea c-model="draft"></textarea>
+    </div>
+  </script></div>
+  <div class="demo-box" c-data="{ note: '' }" c-persist="docs-demo-note">
+    <div class="live-label">Live — type, then reload the page</div>
+    <input class="mini-input" c-model="note" placeholder="This survives a reload…">
+  </div>
+
+  <h2 id="watch"><span c-lang="uz">Kuzatish va effektlar</span><span c-lang="ru">Наблюдатели и эффекты</span><span c-lang="en">Watchers &amp; effects</span></h2>
+  <div c-code="html"><script type="text/plain">
+    <div c-data="{ q: '', init() {
+      this.$watch('q', (now, before) => console.log(before, '→', now))
+    } }">
+      <!-- re-runs whenever anything it reads changes -->
+      <div c-effect="document.title = q ? 'Search: ' + q : 'Home'"></div>
+    </div>
+  </script></div>
+
+  <h2 id="js-api">JavaScript API</h2>
+  <div c-code="js"><script type="text/plain">
+    const state = Comet.reactive({ count: 0 });
+    Comet.effect(() => console.log('count is', state.count)); // logs 0
+    state.count++;                                            // logs 1 (batched, next microtask)
+
+    const doubled = Comet.computed(() => state.count * 2);    // doubled.value
+    Comet.watch(() => state.count, (now, old) => {});
+    await Comet.nextTick();                                   // after the DOM updated
+  </script></div>
+  <div class="callout"><b>⚙</b>
+    <p c-lang="uz">Ichki ishlash: Proxy asosidagi nozik reaktivlik. Har bir effekt qaysi xususiyatni o'qiganini eslab qoladi va faqat o'sha o'zgarganda qayta ishlaydi. O'zgarishlar mikrotaskda guruhlanadi, shuning uchun 100 ta o'zgarish = 1 ta DOM yangilanishi.</p>
+    <p c-lang="ru">Под капотом: точечная реактивность на Proxy. Каждый эффект запоминает прочитанные свойства и перезапускается только при их изменении. Изменения группируются в микрозадаче: 100 изменений = 1 обновление DOM.</p>
+    <p c-lang="en">Under the hood: Proxy-based fine-grained reactivity. Each effect remembers exactly which properties it read and re-runs only when those change. Updates are batched in a microtask, so 100 changes = 1 DOM update.</p>
+  </div>
+</div>

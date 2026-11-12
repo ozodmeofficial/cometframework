@@ -1,0 +1,71 @@
+<title>Roadmap</title>
+<section class="container page-head">
+  <span class="eyebrow" c-reveal>Roadmap</span>
+  <h1 c-reveal="up 80">
+    <span c-lang="uz">Comet qayerga <em class="serif grad-text">uchyapti.</em></span>
+    <span c-lang="ru">Куда <em class="serif grad-text">летит</em> Comet.</span>
+    <span c-lang="en">Where Comet is <em class="serif grad-text">heading.</em></span>
+  </h1>
+  <p class="sub" c-reveal="up 160">
+    <span c-lang="uz">Avval frontend'ni mukammal qilamiz, keyin xuddi shu sintaksis bilan backend. Rejalar hamjamiyat fikriga qarab o'zgarishi mumkin — GitHub'da issue oching.</span>
+    <span c-lang="ru">Сначала доводим до совершенства фронтенд, затем — бэкенд с тем же синтаксисом. Планы могут меняться по отзывам сообщества — открывайте issue на GitHub.</span>
+    <span c-lang="en">First we perfect the frontend, then the backend with the same syntax. Plans may change based on community feedback — open an issue on GitHub.</span>
+  </p>
+</section>
+
+<section class="container">
+  <div class="timeline" style="grid-template-columns:1fr;max-width:820px" c-stagger="120">
+    <div class="ms now">
+      <span class="tag">v0.1 · <span c-lang="uz">hozir</span><span c-lang="ru">сейчас</span><span c-lang="en">now</span></span>
+      <h4>Comet Core</h4>
+      <ul>
+        <li>Fine-grained reactivity, 40+ directives &amp; magics</li>
+        <li>File-based SPA router, layouts, prefetch, View Transitions</li>
+        <li>HTTP-in-HTML, smart sync, optimistic UI, HTML swaps, realtime</li>
+        <li>$db ORM (IndexedDB), mock backend, mock.crud()</li>
+        <li>Components with props/slots/scoped CSS, i18n, $fmt, dark mode, animations, devtools</li>
+      </ul>
+    </div>
+    <div class="ms">
+      <span class="tag">v0.2</span>
+      <h4>CLI · SSG · DX</h4>
+      <ul>
+        <li><code>npx comet build</code> — <span c-lang="uz">sahifalarni oldindan render qilish (SEO uchun statik HTML)</span><span c-lang="ru">пререндер страниц (статический HTML для SEO)</span><span c-lang="en">prerender pages to static HTML for SEO</span></li>
+        <li><code>npx comet new</code> — <span c-lang="uz">loyiha shablonlari</span><span c-lang="ru">шаблоны проектов</span><span c-lang="en">project templates</span></li>
+        <li>TypeScript types (<code>comet.d.ts</code>) &amp; JSDoc</li>
+        <li>VS Code extension: <span c-lang="uz">c-* atributlari uchun avtoto'ldirish</span><span c-lang="ru">автодополнение атрибутов c-*</span><span c-lang="en">autocomplete for c-* attributes</span></li>
+        <li>CSP-safe <span c-lang="uz">ifoda rejimi</span><span c-lang="ru">режим выражений</span><span c-lang="en">expression mode</span></li>
+      </ul>
+    </div>
+    <div class="ms">
+      <span class="tag">v0.3</span>
+      <h4>Comet Server</h4>
+      <ul>
+        <li><span c-lang="uz">Node.js va Bun uchun paket</span><span c-lang="ru">Пакет для Node.js и Bun</span><span c-lang="en">A package for Node.js and Bun</span></li>
+        <li><span c-lang="uz">Fayl asosidagi API: <code>api/users.js</code> → <code>/api/users</code> — mock handler'lar bilan bir xil format</span><span c-lang="ru">Файловое API: <code>api/users.js</code> → <code>/api/users</code> — тот же формат, что у mock-обработчиков</span><span c-lang="en">File-based API: <code>api/users.js</code> → <code>/api/users</code> — the same format as mock handlers</span></li>
+        <li><span c-lang="uz">Server ORM — <code>$db</code> bilan bir xil sintaksis: SQLite, PostgreSQL, MySQL</span><span c-lang="ru">Серверная ORM с синтаксисом <code>$db</code>: SQLite, PostgreSQL, MySQL</span><span c-lang="en">Server ORM with the <code>$db</code> syntax: SQLite, PostgreSQL, MySQL</span></li>
+        <li><span c-lang="uz">Auth, sessiyalar, rate-limit, validatsiya, fayl yuklash</span><span c-lang="ru">Auth, сессии, rate-limit, валидация, загрузка файлов</span><span c-lang="en">Auth, sessions, rate limiting, validation, uploads</span></li>
+        <li><span c-lang="uz">WebSocket/SSE — <code>c-live</code> uchun tayyor</span><span c-lang="ru">WebSocket/SSE — готово для <code>c-live</code></span><span c-lang="en">WebSocket/SSE — ready for <code>c-live</code></span></li>
+      </ul>
+    </div>
+    <div class="ms">
+      <span class="tag">v1.0</span>
+      <h4><span c-lang="uz">Barqaror</span><span c-lang="ru">Стабильная версия</span><span c-lang="en">Stable</span></h4>
+      <ul>
+        <li><span c-lang="uz">Barqaror API va LTS</span><span c-lang="ru">Стабильный API и LTS</span><span c-lang="en">Stable API &amp; LTS</span></li>
+        <li><span c-lang="uz">Plaginlar katalogi</span><span c-lang="ru">Каталог плагинов</span><span c-lang="en">Plugin registry</span></li>
+        <li>Streaming SSR</li>
+        <li><span c-lang="uz">Rasmiy UI-kit (Tailwind asosida)</span><span c-lang="ru">Официальный UI-кит (на Tailwind)</span><span c-lang="en">Official UI kit (Tailwind-based)</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cta" style="margin-top:56px" c-reveal="zoom">
+    <h2 class="h2"><span c-lang="uz">Hissa qo'shing</span><span c-lang="ru">Присоединяйтесь</span><span c-lang="en">Get involved</span></h2>
+    <p class="sub"><span c-lang="uz">G'oya, xato yoki savol bormi? GitHub'da yozing — Comet ochiq kodli va MIT litsenziyasida.</span><span c-lang="ru">Есть идея, баг или вопрос? Пишите на GitHub — Comet открытый, под лицензией MIT.</span><span c-lang="en">Have an idea, a bug or a question? Open an issue — Comet is open source under the MIT license.</span></p>
+    <div class="hero-cta" style="justify-content:center">
+      <a class="btn btn-primary" href="https://github.com/ozodmeofficial/cometframework/issues" target="_blank" rel="noopener">GitHub Issues ↗</a>
+      <a class="btn" href="docs">Docs</a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,96 @@
+<title>Utilities</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Yordamchi imkoniyatlar</span><span c-lang="ru">Утилиты</span><span c-lang="en">Utilities</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Har kuni kerak bo'ladigan kichik, ammo foydali narsalar.</span>
+    <span c-lang="ru">Маленькие, но полезные вещи, нужные каждый день.</span>
+    <span c-lang="en">Small things you need every day.</span>
+  </p>
+
+  <h2 id="refs">c-ref · $refs</h2>
+  <div c-code="html"><script type="text/plain">
+    <div c-data="{}">
+      <input c-ref="name">
+      <button @click="$refs.name.focus()">Focus</button>
+      <dialog c-ref="dlg">…</dialog>
+      <button @click="$refs.dlg.showModal()">Open dialog</button>
+    </div>
+  </script></div>
+
+  <h2 id="toast">$toast</h2>
+  <div c-code="html"><script type="text/plain">
+    <button @click="$toast('Saved!', 'success')">Save</button>
+    <button @click="$toast('Something broke', { type: 'error', duration: 5000 })">Fail</button>
+  </script></div>
+  <div class="demo-box">
+    <div class="live-label">Live</div>
+    <button class="btn btn-sm" @click="$toast('Saved!', 'success')">Success</button>
+    <button class="btn btn-sm" @click="$toast('Something broke', 'error')">Error</button>
+    <button class="btn btn-sm" @click="$toast('Just so you know…')">Info</button>
+  </div>
+  <p c-lang="uz">Ranglarni CSS o'zgaruvchilari bilan sozlang: <code>--c-toast-bg</code>, <code>--c-toast-fg</code>.</p>
+  <p c-lang="ru">Цвета настраиваются CSS-переменными: <code>--c-toast-bg</code>, <code>--c-toast-fg</code>.</p>
+  <p c-lang="en">Style with CSS variables: <code>--c-toast-bg</code>, <code>--c-toast-fg</code>.</p>
+
+  <h2 id="copy">c-copy</h2>
+  <div c-code="html"><script type="text/plain">
+    <button c-copy="inviteLink">Copy link</button>   <!-- gets .c-copied for 1.6s -->
+    <style> .c-copied::after { content: ' ✓' } </style>
+  </script></div>
+
+  <h2 id="teleport">c-teleport</h2>
+  <p c-lang="uz">Elementni boshqa joyga (odatda <code>body</code>) ko'chiradi, lekin u o'z qamrovini saqlaydi. Modal va tooltiplar uchun — <code>overflow: hidden</code> muammosiz.</p>
+  <p c-lang="ru">Переносит элемент в другое место (обычно в <code>body</code>), сохраняя его область видимости. Для модалок и подсказок — без проблем с <code>overflow: hidden</code>.</p>
+  <p c-lang="en">Moves an element elsewhere (usually <code>body</code>) while keeping its scope. Great for modals and tooltips — no <code>overflow: hidden</code> issues.</p>
+  <div c-code="html"><script type="text/plain">
+    <div c-data="{ open: false }">
+      <button @click="open = true">Open</button>
+      <div c-teleport="body" c-show="open" class="modal" @keydown.esc.window="open = false">
+        <button @click="open = false">Close</button>
+      </div>
+    </div>
+  </script></div>
+
+  <h2 id="intersect">c-intersect</h2>
+  <div c-code="html"><script type="text/plain">
+    <div c-intersect="visible = true">…</div>
+    <div c-intersect.once="track('seen-pricing')">…</div>
+    <div c-intersect.leave="paused = true">…</div>
+    <div c-intersect.half="…">…</div>   <!-- .half = 50% visible, .full = 100% -->
+
+    <!-- infinite scroll -->
+    <div c-intersect="page++"></div>
+  </script></div>
+
+  <h2 id="lazy">c-lazy</h2>
+  <p c-lang="uz">Element va uning ichidagi barcha direktivalar faqat ekranga yaqinlashganda ishga tushadi. Og'ir vidjetlar, grafiklar va xaritalar uchun.</p>
+  <p c-lang="ru">Элемент и все директивы внутри инициализируются, только когда приближаются к экрану. Для тяжёлых виджетов, графиков и карт.</p>
+  <p c-lang="en">The element and every directive inside initialize only when they approach the viewport. For heavy widgets, charts and maps.</p>
+  <div c-code="html"><script type="text/plain">
+    <section c-lazy>
+      <div c-get="/api/heavy-report" c-as="report">…</div>
+    </section>
+  </script></div>
+
+  <h2 id="focus">c-focus · c-init · c-effect</h2>
+  <div c-code="html"><script type="text/plain">
+    <input c-focus>                          <!-- autofocus after mount -->
+    <input c-focus="editing">                <!-- focus whenever editing becomes true -->
+    <div c-init="loadSomething()"></div>      <!-- run once after mount -->
+    <div c-effect="console.log(count)"></div> <!-- re-run when dependencies change -->
+  </script></div>
+
+  <h2 id="magics"><span c-lang="uz">Barcha "sehrli" o'zgaruvchilar</span><span c-lang="ru">Все «магические» переменные</span><span c-lang="en">All magic variables</span></h2>
+  <table>
+    <tr><td><code>$el</code> · <code>$event</code> · <code>$refs</code></td><td><span c-lang="uz">Joriy element, hodisa, ref'lar</span><span c-lang="ru">Текущий элемент, событие, ref'ы</span><span c-lang="en">Current element, event, refs</span></td></tr>
+    <tr><td><code>$emit</code> · <code>$dispatch</code></td><td><span c-lang="uz">O'z hodisangizni yuborish</span><span c-lang="ru">Отправить своё событие</span><span c-lang="en">Dispatch a custom event</span></td></tr>
+    <tr><td><code>$store</code> · <code>$watch</code> · <code>$nextTick</code></td><td><span c-lang="uz">Holat</span><span c-lang="ru">Состояние</span><span c-lang="en">State</span></td></tr>
+    <tr><td><code>$route</code> · <code>$nav</code> · <code>$back</code></td><td><span c-lang="uz">Router</span><span c-lang="ru">Роутер</span><span c-lang="en">Router</span></td></tr>
+    <tr><td><code>$fetch</code> · <code>$db</code></td><td><span c-lang="uz">Ma'lumotlar</span><span c-lang="ru">Данные</span><span c-lang="en">Data</span></td></tr>
+    <tr><td><code>$t</code> · <code>$lang</code> · <code>$fmt</code></td><td>i18n</td></tr>
+    <tr><td><code>$theme</code> · <code>$toast</code> · <code>$Comet</code></td><td>UI</td></tr>
+  </table>
+  <p c-lang="uz">O'zingizniki: <code>Comet.magic('now', () => Date.now())</code> → <code>$now</code>.</p>
+  <p c-lang="ru">Свои: <code>Comet.magic('now', () => Date.now())</code> → <code>$now</code>.</p>
+  <p c-lang="en">Your own: <code>Comet.magic('now', () => Date.now())</code> → <code>$now</code>.</p>
+</div>

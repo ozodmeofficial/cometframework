@@ -1,0 +1,75 @@
+<title>Events</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Hodisalar</span><span c-lang="ru">События</span><span c-lang="en">Events</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz"><code>@hodisa</code> (yoki <code>c-on:hodisa</code>) istalgan DOM hodisasiga javob beradi.</span>
+    <span c-lang="ru"><code>@событие</code> (или <code>c-on:событие</code>) реагирует на любое DOM-событие.</span>
+    <span c-lang="en"><code>@event</code> (or <code>c-on:event</code>) reacts to any DOM event.</span>
+  </p>
+
+  <h2 id="basics"><span c-lang="uz">Asoslar</span><span c-lang="ru">Основы</span><span c-lang="en">Basics</span></h2>
+  <div c-code="html"><script type="text/plain">
+    <button @click="count++">+1</button>
+    <button @click="save">Save</button>               <!-- method reference -->
+    <button @click="remove(item.id)">Delete</button>  <!-- call with args -->
+    <input @input="query = $event.target.value">     <!-- $event is the DOM event -->
+    <button @click="await save(); $toast('Saved!')">Async works too</button>
+  </script></div>
+
+  <h2 id="modifiers"><span c-lang="uz">Modifikatorlar</span><span c-lang="ru">Модификаторы</span><span c-lang="en">Modifiers</span></h2>
+  <table>
+    <tr><th>Modifier</th><th><span c-lang="uz">Ma'nosi</span><span c-lang="ru">Значение</span><span c-lang="en">Meaning</span></th></tr>
+    <tr><td><code>.prevent</code></td><td><code>event.preventDefault()</code></td></tr>
+    <tr><td><code>.stop</code></td><td><code>event.stopPropagation()</code></td></tr>
+    <tr><td><code>.once</code></td><td><span c-lang="uz">Faqat bir marta</span><span c-lang="ru">Только один раз</span><span c-lang="en">Run only once</span></td></tr>
+    <tr><td><code>.self</code></td><td><span c-lang="uz">Faqat elementning o'zida bosilsa</span><span c-lang="ru">Только если цель — сам элемент</span><span c-lang="en">Only if the target is the element itself</span></td></tr>
+    <tr><td><code>.outside</code></td><td><span c-lang="uz">Elementdan tashqarida bosilganda (dropdown'larni yopish)</span><span c-lang="ru">Клик вне элемента (закрытие dropdown)</span><span c-lang="en">Click outside the element (close dropdowns)</span></td></tr>
+    <tr><td><code>.window</code> · <code>.document</code></td><td><span c-lang="uz">Global tinglash</span><span c-lang="ru">Глобальное прослушивание</span><span c-lang="en">Listen globally</span></td></tr>
+    <tr><td><code>.debounce.300</code> · <code>.throttle.100</code></td><td><span c-lang="uz">Chastotani cheklash (ms)</span><span c-lang="ru">Ограничение частоты (мс)</span><span c-lang="en">Rate limiting (ms)</span></td></tr>
+    <tr><td><code>.enter .esc .space .tab .up .down .left .right .delete</code></td><td><span c-lang="uz">Klavish filtrlari</span><span c-lang="ru">Фильтры клавиш</span><span c-lang="en">Key filters</span></td></tr>
+    <tr><td><code>.ctrl .shift .alt .meta</code></td><td><span c-lang="uz">Tizim klavishlari</span><span c-lang="ru">Системные клавиши</span><span c-lang="en">System keys</span></td></tr>
+    <tr><td><code>.passive .capture</code></td><td><span c-lang="uz">Listener sozlamalari</span><span c-lang="ru">Опции слушателя</span><span c-lang="en">Listener options</span></td></tr>
+  </table>
+  <div c-code="html"><script type="text/plain">
+    <form @submit.prevent="send">…</form>
+    <input @keydown.enter="add" @keydown.esc="draft = ''">
+    <input @input.debounce.400="search()">
+    <div c-show="open" @click.outside="open = false">Dropdown</div>
+    <div @scroll.window.throttle.50="y = scrollY"></div>
+    <div @keydown.ctrl.s.prevent.window="save()"></div>
+  </script></div>
+  <div class="demo-box" c-data="{ open: false, keys: [] }">
+    <div class="live-label">Live</div>
+    <div style="position:relative;display:inline-block">
+      <button class="btn btn-sm" @click="open = !open">Dropdown ▾</button>
+      <div c-show="open" c-transition="scale" @click.outside="open = false" style="position:absolute;top:44px;left:0;z-index:5;padding:8px;border-radius:12px;border:1px solid var(--line-2);background:var(--card-2);min-width:160px">
+        <div style="padding:6px 10px">Profile</div><div style="padding:6px 10px">Settings</div><div style="padding:6px 10px">Log out</div>
+      </div>
+    </div>
+    <input class="mini-input" style="margin-top:12px" placeholder="Press Enter / Esc here" @keydown.enter="keys.push('⏎')" @keydown.esc="keys = []">
+    <p>{{ keys.join(' ') || '—' }}</p>
+  </div>
+
+  <h2 id="custom-events"><span c-lang="uz">O'z hodisalaringiz: $emit</span><span c-lang="ru">Свои события: $emit</span><span c-lang="en">Custom events: $emit</span></h2>
+  <p c-lang="uz"><code>$emit(nom, ma'lumot)</code> elementdan yuqoriga ko'tariluvchi (bubbling) hodisa yuboradi. Ota element uni <code>@nom</code> bilan ushlaydi, ma'lumot — <code>$event.detail</code>.</p>
+  <p c-lang="ru"><code>$emit(имя, данные)</code> отправляет всплывающее событие от элемента. Родитель ловит его через <code>@имя</code>, данные — в <code>$event.detail</code>.</p>
+  <p c-lang="en"><code>$emit(name, detail)</code> dispatches a bubbling event from the element. A parent catches it with <code>@name</code>; data is in <code>$event.detail</code>.</p>
+  <div c-code="html"><script type="text/plain">
+    <div @item-selected="selected = $event.detail" c-data="{ selected: null }">
+      <button @click="$emit('item-selected', 42)">Pick 42</button>
+      Selected: {{ selected }}
+    </div>
+  </script></div>
+  <p c-lang="uz">Hodisa nomlarida kebab-case ishlating: HTML atribut nomlari kichik harflarga aylantiriladi.</p>
+  <p c-lang="ru">Используйте kebab-case в именах событий: HTML приводит имена атрибутов к нижнему регистру.</p>
+  <p c-lang="en">Use kebab-case event names: HTML lowercases attribute names.</p>
+
+  <h2 id="hotkeys">c-hotkey</h2>
+  <p c-lang="uz">Global klaviatura yorliqlari. <code>mod</code> — Mac'da ⌘, Windows/Linux'da Ctrl. Element input bo'lsa — fokus oladi, aks holda — bosiladi.</p>
+  <p c-lang="ru">Глобальные горячие клавиши. <code>mod</code> — ⌘ на Mac, Ctrl на Windows/Linux. Если элемент — поле ввода, он получает фокус, иначе — нажимается.</p>
+  <p c-lang="en">Global keyboard shortcuts. <code>mod</code> is ⌘ on Mac and Ctrl elsewhere. Inputs get focused; anything else is clicked.</p>
+  <div c-code="html"><script type="text/plain">
+    <input c-hotkey="mod+k, /" placeholder="Search (⌘K)">
+    <button c-hotkey="shift+n" @click="newDoc()">New</button>
+  </script></div>
+</div>

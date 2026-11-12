@@ -1,0 +1,6 @@
+{
+  "nav": { "docs": "Документация", "examples": "Примеры", "roadmap": "Roadmap", "search": "Поиск", "start": "Начать" },
+  "palette": { "placeholder": "Поиск по документации…", "empty": "Ничего не найдено" },
+  "docs": { "prev": "Назад", "next": "Далее", "onthis": "На этой странице", "menu": "Меню", "edit": "Редактировать на GitHub" },
+  "footer": { "tagline": "Веб-фреймворк без сборки. Один тег script — всё включено.", "learn": "Обучение", "project": "Проект", "quick": "Быстрый старт", "compare": "Сравнение", "issues": "Issues", "made": "Сделано на самом Comet — без сборки." }
+}

@@ -1,0 +1,6 @@
+{
+  "nav": { "docs": "Hujjatlar", "examples": "Misollar", "roadmap": "Roadmap", "search": "Qidirish", "start": "Boshlash" },
+  "palette": { "placeholder": "Hujjatlardan qidiring…", "empty": "Hech narsa topilmadi" },
+  "docs": { "prev": "Oldingi", "next": "Keyingi", "onthis": "Bu sahifada", "menu": "Menyu", "edit": "GitHub'da tahrirlash" },
+  "footer": { "tagline": "Build talab qilmaydigan web freymwork. Bitta script tegi — hammasi ichida.", "learn": "O'rganish", "project": "Loyiha", "quick": "Tez start", "compare": "Taqqoslash", "issues": "Muammolar", "made": "Comet'ning o'zida yozilgan — build bosqichisiz." }
+}

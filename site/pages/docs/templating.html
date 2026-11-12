@@ -1,0 +1,107 @@
+<title>Templating</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Shablonlar</span><span c-lang="ru">Шаблоны</span><span c-lang="en">Templating</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Ma'lumotni HTML'ga chiqarish, shartlar, ro'yxatlar va atributlarni bog'lash.</span>
+    <span c-lang="ru">Вывод данных в HTML, условия, списки и привязка атрибутов.</span>
+    <span c-lang="en">Rendering data, conditionals, lists and attribute bindings.</span>
+  </p>
+
+  <h2 id="interpolation"><span c-lang="uz">Interpolatsiya</span><span c-lang="ru">Интерполяция</span><span c-lang="en">Interpolation</span></h2>
+  <p c-lang="uz">Matn ichida va istalgan atributda <code c-pre>{{ ifoda }}</code> ishlatiladi. Ichida har qanday JavaScript ifodasi bo'lishi mumkin.</p>
+  <p c-lang="ru">В тексте и любом атрибуте используйте <code c-pre>{{ выражение }}</code>. Внутри может быть любое JavaScript-выражение.</p>
+  <p c-lang="en">Use <code c-pre>{{ expression }}</code> in text and in any attribute. Any JavaScript expression works.</p>
+  <div c-code="html"><script type="text/plain">
+    <div c-data="{ user: { name: 'Aziza', id: 7 }, items: [1, 2, 3] }">
+      <p>Hello, {{ user.name.toUpperCase() }}!</p>
+      <p>Total: {{ items.reduce((a, b) => a + b, 0) }}</p>
+      <a href="/users/{{ user.id }}" title="Profile of {{ user.name }}">Profile</a>
+    </div>
+  </script></div>
+
+  <h3><code>c-text</code> · <code>c-html</code></h3>
+  <p c-lang="uz"><code>c-text</code> elementning butun matnini almashtiradi. <code>c-html</code> HTML'ni qo'yadi — faqat ishonchli ma'lumot uchun ishlating (XSS xavfi).</p>
+  <p c-lang="ru"><code>c-text</code> заменяет весь текст элемента. <code>c-html</code> вставляет HTML — используйте только для доверенных данных (риск XSS).</p>
+  <p c-lang="en"><code>c-text</code> replaces the element's text. <code>c-html</code> inserts HTML — only use it with trusted content (XSS risk).</p>
+  <div c-code="html"><script type="text/plain">
+    <span c-text="price.toFixed(2)"></span>
+    <div c-html="article.body"></div>
+  </script></div>
+
+  <h2 id="conditionals"><span c-lang="uz">Shartlar</span><span c-lang="ru">Условия</span><span c-lang="en">Conditionals</span></h2>
+  <p c-lang="uz"><code>c-if</code> elementni DOM'ga qo'shadi yoki olib tashlaydi. <code>c-show</code> faqat <code>display</code>'ni o'zgartiradi (tez-tez almashadigan narsalar uchun).</p>
+  <p c-lang="ru"><code>c-if</code> добавляет или убирает элемент из DOM. <code>c-show</code> меняет только <code>display</code> (для частых переключений).</p>
+  <p c-lang="en"><code>c-if</code> adds or removes the element from the DOM. <code>c-show</code> only toggles <code>display</code> (better for frequent toggles).</p>
+  <div c-code="html"><script type="text/plain">
+    <p c-if="score >= 90">Excellent</p>
+    <p c-else-if="score >= 60">Good</p>
+    <p c-else>Keep going</p>
+
+    <!-- group several elements without a wrapper -->
+    <template c-if="user">
+      <img :src="user.avatar">
+      <b>{{ user.name }}</b>
+    </template>
+
+    <div c-show="open" c-transition="slide-down">Menu</div>
+  </script></div>
+  <div class="demo-box" c-data="{ score: 72 }">
+    <div class="live-label">Live</div>
+    <input type="range" min="0" max="100" c-model="score"> <b>{{ score }}</b>
+    <p c-if="score >= 90">🏆 Excellent</p>
+    <p c-else-if="score >= 60">👍 Good</p>
+    <p c-else>💪 Keep going</p>
+  </div>
+
+  <h2 id="lists"><span c-lang="uz">Ro'yxatlar</span><span c-lang="ru">Списки</span><span c-lang="en">Lists</span></h2>
+  <p c-lang="uz"><code>c-for</code> massiv, obyekt yoki son bo'yicha aylanadi. <code>c-key</code> berilsa, elementlar kalit bo'yicha qayta ishlatiladi va joyi o'zgartiriladi — bu tartiblash va o'chirishda tez hamda input holatini saqlaydi.</p>
+  <p c-lang="ru"><code>c-for</code> перебирает массив, объект или число. С <code>c-key</code> элементы переиспользуются и перемещаются по ключу — это быстро при сортировке и удалении и сохраняет состояние input.</p>
+  <p c-lang="en"><code>c-for</code> loops over arrays, objects or numbers. With <code>c-key</code>, rows are reused and moved by key — fast for sorting/removal and it preserves input state.</p>
+  <div c-code="html"><script type="text/plain">
+    <li c-for="todo in todos" c-key="todo.id">{{ todo.title }}</li>
+    <li c-for="(todo, index) in todos">{{ index + 1 }}. {{ todo.title }}</li>
+    <li c-for="(value, key) in settings">{{ key }} = {{ value }}</li>
+    <span c-for="n in 5">⭐</span>
+
+    <!-- c-for + c-if on the same element acts as a filter -->
+    <li c-for="t in todos" c-if="!t.done">{{ t.title }}</li>
+
+    <!-- multiple elements per item -->
+    <template c-for="p in products">
+      <dt>{{ p.name }}</dt>
+      <dd>{{ $fmt.currency(p.price, 'USD') }}</dd>
+    </template>
+  </script></div>
+  <div class="demo-box" c-data="{ items: ['Bukhara', 'Samarkand', 'Khiva', 'Tashkent'], sortAsc: true }">
+    <div class="live-label">Live</div>
+    <button class="btn btn-sm" @click="sortAsc = !sortAsc; items.sort((a, b) => sortAsc ? a.localeCompare(b) : b.localeCompare(a))">Sort {{ sortAsc ? '↓' : '↑' }}</button>
+    <button class="btn btn-sm" @click="items.push('City ' + (items.length + 1))">+ Add</button>
+    <ul class="mini-list"><li c-for="(c, i) in items" c-key="c">{{ i + 1 }}. {{ c }} <button class="x" @click="items.splice(i, 1)">×</button></li></ul>
+  </div>
+
+  <h2 id="bind"><span c-lang="uz">Atributlarni bog'lash</span><span c-lang="ru">Привязка атрибутов</span><span c-lang="en">Attribute binding</span></h2>
+  <p c-lang="uz"><code>:atribut="ifoda"</code> (yoki <code>c-bind:atribut</code>). <code>false</code>/<code>null</code> atributni olib tashlaydi. <code>:class</code> va <code>:style</code> obyekt va massivlarni qabul qiladi va mavjud klasslarni buzmaydi — Tailwind bilan ideal.</p>
+  <p c-lang="ru"><code>:атрибут="выражение"</code> (или <code>c-bind:атрибут</code>). <code>false</code>/<code>null</code> убирает атрибут. <code>:class</code> и <code>:style</code> принимают объекты и массивы и не ломают существующие классы — идеально для Tailwind.</p>
+  <p c-lang="en"><code>:attr="expression"</code> (or <code>c-bind:attr</code>). <code>false</code>/<code>null</code> removes the attribute. <code>:class</code> and <code>:style</code> accept objects and arrays and never clobber existing classes — perfect with Tailwind.</p>
+  <div c-code="html"><script type="text/plain">
+    <img :src="user.avatar" :alt="user.name">
+    <button :disabled="!form.valid">Save</button>
+
+    <div class="rounded p-4" :class="{ 'bg-green-500': ok, 'bg-red-500': !ok }"></div>
+    <div :class="[size, active && 'ring-2']"></div>
+    <div :style="{ width: progress + '%', '--hue': hue }"></div>
+
+    <!-- spread an object of attributes -->
+    <input c-bind="{ type: 'email', required: true, placeholder: 'you@mail.com' }">
+
+    <!-- SVG camelCase attributes -->
+    <svg :viewBox="'0 0 ' + w + ' ' + h"></svg>
+  </script></div>
+
+  <h2 id="cloak">c-cloak · c-pre · c-ignore</h2>
+  <table>
+    <tr><td><code>c-cloak</code></td><td><span c-lang="uz">Element Comet uni ishga tushirguncha yashirin turadi (<code c-pre>{{ }}</code> ko'rinib qolmaydi).</span><span c-lang="ru">Элемент скрыт, пока Comet его не инициализирует (никаких видимых <code c-pre>{{ }}</code>).</span><span c-lang="en">Hidden until Comet initializes it (no flash of raw <code c-pre>{{ }}</code>).</span></td></tr>
+    <tr><td><code>c-pre</code></td><td><span c-lang="uz">Ichidagi hech narsani qayta ishlamaydi — kod namunalari uchun.</span><span c-lang="ru">Ничего внутри не обрабатывается — для примеров кода.</span><span c-lang="en">Nothing inside is processed — for code samples.</span></td></tr>
+    <tr><td><code>c-ignore</code></td><td><span c-lang="uz">Butun qism Comet'dan chetda qoladi (masalan, uchinchi tomon vidjetlari).</span><span c-lang="ru">Весь фрагмент исключён из Comet (например, сторонние виджеты).</span><span c-lang="en">The whole subtree is left alone (e.g. third-party widgets).</span></td></tr>
+  </table>
+</div>

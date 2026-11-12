@@ -1,1 +1,90 @@
-<!doctype html><title>tmp</title>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Works on github.io/<repo>/ and on a custom domain without changes -->
+  <script>(function(){var h=location.hostname,s=location.pathname.split('/')[1];document.write('<base href="'+(/\.github\.io$/.test(h)&&s?'/'+s+'/':'/')+'">')})()</script>
+  <title>Comet — the build-free web framework</title>
+  <meta name="description" content="Comet is a build-free web framework. One script tag gives you reactivity, an SPA router, HTTP-in-HTML, components, a local database, a mock backend, i18n and devtools.">
+  <meta name="theme-color" content="#07060d">
+  <meta property="og:title" content="Comet — the build-free web framework">
+  <meta property="og:description" content="One script tag. No build step. Reactivity, routing, data fetching, components, local ORM and a mock backend — straight from HTML.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400..600&family=Instrument+Serif:ital@0;1&display=swap">
+  <link rel="stylesheet" href="assets/style.css">
+  <!-- The whole framework: one script tag -->
+  <script src="assets/comet.min.js"></script>
+  <script src="assets/app.js"></script>
+  <script type="comet/routes">{ "/docs": "pages/docs/index.html" }</script>
+</head>
+<body>
+  <div class="bg-fx" aria-hidden="true"></div>
+
+  <header class="nav" c-data="{ menu: false, scrolled: false }" @scroll.window.throttle.50="scrolled = scrollY > 8" :class="{ scrolled: scrolled || menu }" c-init="scrolled = scrollY > 8">
+    <div class="container nav-in">
+      <a href="./" class="brand" aria-label="Comet home">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="t" x1="3" y1="29" x2="22" y2="9" gradientUnits="userSpaceOnUse"><stop stop-color="#7c3aed" stop-opacity="0"/><stop offset=".7" stop-color="#818cf8"/><stop offset="1" stop-color="#a5f3fc"/></linearGradient><radialGradient id="h" cx="22" cy="9.5" r="7" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".45" stop-color="#a5f3fc"/><stop offset="1" stop-color="#7c3aed"/></radialGradient></defs><path d="M2.5 29.5 18 12" stroke="url(#t)" stroke-width="4.5" stroke-linecap="round"/><path d="M8 28 19.5 15.5M2 22l14-11" stroke="url(#t)" stroke-width="2" stroke-linecap="round" opacity=".7"/><circle cx="22" cy="9.5" r="6.5" fill="url(#h)"/></svg>
+        Comet <span class="ver">v0.1</span>
+      </a>
+      <nav class="links" :class="{ open: menu }" @click="menu = false">
+        <a href="docs" c-active.prefix="on">{{ $t('nav.docs') }}</a>
+        <a href="examples" c-active="on">{{ $t('nav.examples') }}</a>
+        <a href="roadmap" c-active="on">{{ $t('nav.roadmap') }}</a>
+        <a href="https://github.com/ozodmeofficial/cometframework" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <div class="actions">
+        <button class="search-btn" type="button" c-hotkey="mod+k, /" @click="$store.ui.palette = true" :aria-label="$t('nav.search')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <span>{{ $t('nav.search') }}</span><kbd>⌘K</kbd>
+        </button>
+        <select class="lang-select" c-model="$lang" aria-label="Language">
+          <option value="uz">UZ</option><option value="ru">RU</option><option value="en">EN</option>
+        </select>
+        <button class="icon-btn" type="button" @click="$theme.toggle()" :aria-label="$theme.dark ? 'Light mode' : 'Dark mode'">
+          <svg c-if="$theme.dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <svg c-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <a class="btn btn-primary btn-sm" href="docs/installation">{{ $t('nav.start') }}</a>
+        <button class="icon-btn burger" type="button" @click="menu = !menu" aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main c-view></main>
+
+  <footer class="site">
+    <div class="container">
+      <div class="foot">
+        <div>
+          <a href="./" class="brand"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="t" x1="3" y1="29" x2="22" y2="9" gradientUnits="userSpaceOnUse"><stop stop-color="#7c3aed" stop-opacity="0"/><stop offset=".7" stop-color="#818cf8"/><stop offset="1" stop-color="#a5f3fc"/></linearGradient><radialGradient id="h" cx="22" cy="9.5" r="7" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".45" stop-color="#a5f3fc"/><stop offset="1" stop-color="#7c3aed"/></radialGradient></defs><path d="M2.5 29.5 18 12" stroke="url(#t)" stroke-width="4.5" stroke-linecap="round"/><path d="M8 28 19.5 15.5M2 22l14-11" stroke="url(#t)" stroke-width="2" stroke-linecap="round" opacity=".7"/><circle cx="22" cy="9.5" r="6.5" fill="url(#h)"/></svg> Comet</a>
+          <p style="max-width:34ch;margin-top:12px">{{ $t('footer.tagline') }}</p>
+        </div>
+        <div><h5>{{ $t('footer.learn') }}</h5><a href="docs">{{ $t('nav.docs') }}</a><a href="docs/quick-start">{{ $t('footer.quick') }}</a><a href="examples">{{ $t('nav.examples') }}</a><a href="docs/api">API</a></div>
+        <div><h5>{{ $t('footer.project') }}</h5><a href="roadmap">{{ $t('nav.roadmap') }}</a><a href="docs/comparison">{{ $t('footer.compare') }}</a><a href="https://github.com/ozodmeofficial/cometframework" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/ozodmeofficial/cometframework/issues" target="_blank" rel="noopener">{{ $t('footer.issues') }}</a></div>
+        <div><h5>CDN</h5><a href="https://cdn.jsdelivr.net/gh/ozodmeofficial/cometframework@main/dist/comet.min.js" target="_blank" rel="noopener">comet.min.js</a><a href="https://cdn.jsdelivr.net/gh/ozodmeofficial/cometframework@main/dist/comet.js" target="_blank" rel="noopener">comet.js</a><a href="docs/devtools">Devtools</a></div>
+      </div>
+      <div class="foot-bottom"><span>© 2026 Comet · MIT License</span><span>{{ $t('footer.made') }}</span></div>
+    </div>
+  </footer>
+
+  <div class="palette-wrap" c-data="palette()" c-show="$store.ui.palette" c-transition="fade" c-cloak
+       @click.self="$store.ui.palette = false" @keydown.esc.window="$store.ui.palette = false"
+       c-effect="$store.ui.palette && $nextTick(() => $refs.pin.focus())">
+    <div class="palette" role="dialog" aria-modal="true" :aria-label="$t('nav.search')">
+      <input c-ref="pin" c-model="q" @input="i = 0" @keydown.down.prevent="move(1)" @keydown.up.prevent="move(-1)" @keydown.enter.prevent="go()" :placeholder="$t('palette.placeholder')">
+      <ul>
+        <li c-for="(r, idx) in results" :class="{ on: idx === i }" @mouseenter="i = idx">
+          <a :href="r.slug || './'" @click.prevent="go(r)">{{ r.title[$lang] }} <small>{{ r.group[$lang] }}</small></a>
+        </li>
+      </ul>
+      <p class="empty" c-show="!results.length">{{ $t('palette.empty') }}</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<title>Devtools</title>
+<div c-layout="docs">
+  <h1>Devtools</h1>
+  <p class="lead-p">
+    <span c-lang="uz">Brauzer kengaytmasi kerak emas — devtools freymworkning ichida.</span>
+    <span c-lang="ru">Расширение браузера не нужно — devtools встроены во фреймворк.</span>
+    <span c-lang="en">No browser extension needed — devtools ship inside the framework.</span>
+  </p>
+  <div class="demo-box">
+    <div class="live-label">Live</div>
+    <button class="btn btn-primary" @click="$Comet.devtools()"><span c-lang="uz">Devtools'ni ochish / yopish</span><span c-lang="ru">Открыть / закрыть devtools</span><span c-lang="en">Toggle devtools</span></button>
+  </div>
+
+  <h2 id="open"><span c-lang="uz">Qanday ochiladi</span><span c-lang="ru">Как открыть</span><span c-lang="en">How to open</span></h2>
+  <ul>
+    <li><kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd></li>
+    <li><span c-lang="uz">URL'ga</span><span c-lang="ru">Добавьте к URL</span><span c-lang="en">Add to the URL:</span> <code>?comet-devtools</code></li>
+    <li><code>&lt;script src="…/comet.min.js" data-devtools&gt;</code></li>
+    <li><span c-lang="uz">Konsolda</span><span c-lang="ru">В консоли</span><span c-lang="en">From the console:</span> <code>Comet.devtools()</code></li>
+  </ul>
+
+  <h2 id="tabs"><span c-lang="uz">Tablar</span><span c-lang="ru">Вкладки</span><span c-lang="en">Tabs</span></h2>
+  <table>
+    <tr><td><b>state</b></td><td><span c-lang="uz">Barcha store'lar va <code>c-data</code> qamrovlari jonli JSON ko'rinishida. Sichqonchani olib borsangiz, element sahifada belgilanadi.</span><span c-lang="ru">Все store и области <code>c-data</code> в виде живого JSON. При наведении элемент подсвечивается на странице.</span><span c-lang="en">Every store and <code>c-data</code> scope as live JSON. Hover to highlight the element on the page.</span></td></tr>
+    <tr><td><b>network</b></td><td><span c-lang="uz">So'rovlar: metod, URL, status, vaqt va mock belgisi.</span><span c-lang="ru">Запросы: метод, URL, статус, время и пометка mock.</span><span c-lang="en">Requests: method, URL, status, timing and a mock badge.</span></td></tr>
+    <tr><td><b>router</b></td><td><span c-lang="uz">Joriy <code>$route</code> va navigatsiya tarixi.</span><span c-lang="ru">Текущий <code>$route</code> и история навигации.</span><span c-lang="en">The current <code>$route</code> and navigation history.</span></td></tr>
+    <tr><td><b>perf</b></td><td><span c-lang="uz">Ishga tushish va mount vaqti, faol effektlar, effekt ishga tushishlari, DOM tugunlari soni.</span><span c-lang="ru">Время запуска и монтирования, активные эффекты, запуски эффектов, число DOM-узлов.</span><span c-lang="en">Startup and mount time, active effects, effect runs, DOM node count.</span></td></tr>
+    <tr><td><b>errors</b></td><td><span c-lang="uz">Ifodalardagi xatolar — qaysi ifoda va nima bo'lgani bilan.</span><span c-lang="ru">Ошибки в выражениях — с текстом выражения и причиной.</span><span c-lang="en">Expression errors — with the exact expression and cause.</span></td></tr>
+  </table>
+  <p c-lang="uz">Panel Shadow DOM ichida chiziladi, shuning uchun sizning CSS'ingizga ta'sir qilmaydi va undan ta'sirlanmaydi.</p>
+  <p c-lang="ru">Панель рендерится в Shadow DOM, поэтому не влияет на ваш CSS и не зависит от него.</p>
+  <p c-lang="en">The panel renders inside Shadow DOM, so it neither affects nor is affected by your CSS.</p>
+
+  <h2 id="errors"><span c-lang="uz">Tushunarli xatolar</span><span c-lang="ru">Понятные ошибки</span><span c-lang="en">Readable errors</span></h2>
+  <p c-lang="uz">Ifodada xato bo'lsa, konsolda ifodaning o'zi va element ko'rsatiladi (bir xil xato faqat bir marta):</p>
+  <p c-lang="ru">При ошибке в выражении консоль покажет само выражение и элемент (одинаковые ошибки — один раз):</p>
+  <p c-lang="en">When an expression fails, the console shows the expression itself and the element (identical errors are logged once):</p>
+  <div c-code="text"><script type="text/plain">
+    [Comet] Error in expression "user.profile.name"    TypeError: Cannot read properties of null
+  </script></div>
+</div>

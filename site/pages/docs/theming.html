@@ -1,0 +1,76 @@
+<title>Dark mode & CSS</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Dark mode va CSS</span><span c-lang="ru">Тёмная тема и CSS</span><span c-lang="en">Dark mode &amp; CSS</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Comet sizning CSS'ingizga aralashmaydi. Tailwind, Bootstrap, oddiy CSS — hammasi o'zgarishsiz ishlaydi.</span>
+    <span c-lang="ru">Comet не вмешивается в ваш CSS. Tailwind, Bootstrap, обычный CSS — всё работает как есть.</span>
+    <span c-lang="en">Comet stays out of your CSS. Tailwind, Bootstrap, plain CSS — all work untouched.</span>
+  </p>
+
+  <h2 id="dark"><span c-lang="uz">Avto dark mode</span><span c-lang="ru">Автоматическая тёмная тема</span><span c-lang="en">Automatic dark mode</span></h2>
+  <p c-lang="uz">Comet <code>&lt;html&gt;</code>'ga <code>class="dark"</code> va <code>data-theme="dark|light"</code> qo'yadi. Standart rejim — <code>system</code> (OS sozlamasiga ergashadi). Tanlov saqlanadi va sahifa chizilishidan oldin qo'llanadi — miltillash bo'lmaydi.</p>
+  <p c-lang="ru">Comet ставит на <code>&lt;html&gt;</code> <code>class="dark"</code> и <code>data-theme="dark|light"</code>. Режим по умолчанию — <code>system</code> (следует ОС). Выбор сохраняется и применяется до отрисовки — без мерцания.</p>
+  <p c-lang="en">Comet sets <code>class="dark"</code> and <code>data-theme="dark|light"</code> on <code>&lt;html&gt;</code>. The default mode is <code>system</code> (follows the OS). The choice is saved and applied before the first paint — no flash.</p>
+  <div c-code="html"><script type="text/plain">
+    <button @click="$theme.toggle()">{{ $theme.dark ? '☀️' : '🌙' }}</button>
+
+    <select c-model="$theme.mode">
+      <option value="system">System</option>
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
+  </script></div>
+  <div c-code="css"><script type="text/plain">
+    :root      { --bg: #fff; --fg: #111; }
+    html.dark  { --bg: #0b0b10; --fg: #eee; }
+    /* or */
+    [data-theme="dark"] .card { background: #111; }
+  </script></div>
+  <table>
+    <tr><td><code>$theme.mode</code></td><td><code>'system' | 'light' | 'dark'</code></td></tr>
+    <tr><td><code>$theme.dark</code></td><td><span c-lang="uz">Hozir qorong'i rejimmi (boolean)</span><span c-lang="ru">Сейчас тёмный режим (boolean)</span><span c-lang="en">Is dark right now (boolean)</span></td></tr>
+    <tr><td><code>$theme.toggle()</code> · <code>$theme.set(mode)</code></td><td><span c-lang="uz">O'zgartirish</span><span c-lang="ru">Переключение</span><span c-lang="en">Change it</span></td></tr>
+  </table>
+
+  <h2 id="tailwind">Tailwind CSS</h2>
+  <p c-lang="uz">Tailwind'ning <code>dark:</code> variantlari <code>class</code> strategiyasi bilan darhol ishlaydi. <code>:class</code> mavjud klasslarni buzmaydi.</p>
+  <p c-lang="ru">Варианты <code>dark:</code> в Tailwind сразу работают со стратегией <code>class</code>. <code>:class</code> не ломает существующие классы.</p>
+  <p c-lang="en">Tailwind's <code>dark:</code> variants work out of the box with the <code>class</code> strategy. <code>:class</code> never clobbers existing classes.</p>
+  <div c-code="html"><script type="text/plain">
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <script>tailwind.config = { darkMode: 'class' }<\/script>
+    <script src="…/comet.min.js"><\/script>
+
+    <div c-data="{ ok: true }" class="p-6 rounded-2xl bg-white dark:bg-zinc-900"
+         :class="ok ? 'ring-2 ring-emerald-500' : 'ring-2 ring-rose-500'">
+      <button class="px-4 py-2 rounded-lg bg-indigo-600 text-white" @click="ok = !ok">Toggle</button>
+    </div>
+  </script></div>
+  <div class="callout"><b>💡</b>
+    <p c-lang="uz">Tailwind Play CDN prototip uchun qulay. Ishlab chiqarishda Tailwind CLI bilan tayyor CSS fayl yarating — Comet'ga bu baribir.</p>
+    <p c-lang="ru">Tailwind Play CDN удобен для прототипов. В продакшене соберите CSS через Tailwind CLI — для Comet это не важно.</p>
+    <p c-lang="en">The Tailwind Play CDN is great for prototypes. In production, generate a CSS file with the Tailwind CLI — Comet doesn't care either way.</p>
+  </div>
+
+  <h2 id="bootstrap"><span c-lang="uz">Bootstrap va boshqalar</span><span c-lang="ru">Bootstrap и другие</span><span c-lang="en">Bootstrap &amp; friends</span></h2>
+  <div c-code="html"><script type="text/plain">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+    <div class="alert" :class="saved ? 'alert-success' : 'alert-secondary'" c-data="{ saved: false }">
+      <button class="btn btn-primary" @click="saved = true">Save</button>
+    </div>
+  </script></div>
+
+  <h2 id="vanilla"><span c-lang="uz">Oddiy JS va jQuery bilan</span><span c-lang="ru">С обычным JS и jQuery</span><span c-lang="en">With vanilla JS &amp; jQuery</span></h2>
+  <p c-lang="uz">Boshqa skript sahifaga <code>c-*</code> atributli HTML qo'shsa, Comet uni avtomatik ishga tushiradi (MutationObserver). Uchinchi tomon vidjetlari uchun <code>c-ignore</code> ishlating.</p>
+  <p c-lang="ru">Если другой скрипт вставит HTML с атрибутами <code>c-*</code>, Comet автоматически его оживит (MutationObserver). Для сторонних виджетов используйте <code>c-ignore</code>.</p>
+  <p c-lang="en">When any other script inserts HTML with <code>c-*</code> attributes, Comet initializes it automatically (MutationObserver). Use <code>c-ignore</code> for third-party widgets.</p>
+  <div c-code="js"><script type="text/plain">
+    document.querySelector('#list').insertAdjacentHTML('beforeend',
+      '<li c-data="{ n: 0 }" @click="n++">clicked {{ n }}</li>');   // just works
+
+    // read/modify state from outside
+    const scope = Comet.scope(document.querySelector('#cart'));
+    scope.items.push({ name: 'Pen' });
+  </script></div>
+</div>

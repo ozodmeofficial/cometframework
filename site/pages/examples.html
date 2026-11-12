@@ -1,0 +1,210 @@
+<title>Examples</title>
+<section class="container page-head">
+  <span class="eyebrow" c-reveal><span c-lang="uz">Misollar</span><span c-lang="ru">Примеры</span><span c-lang="en">Examples</span></span>
+  <h1 c-reveal="up 80">
+    <span c-lang="uz">Haqiqiy ilovalar. <em class="serif grad-text">Build'siz.</em></span>
+    <span c-lang="ru">Настоящие приложения. <em class="serif grad-text">Без сборки.</em></span>
+    <span c-lang="en">Real apps. <em class="serif grad-text">Zero build.</em></span>
+  </h1>
+  <p class="sub" c-reveal="up 160">
+    <span c-lang="uz">Har bir misol shu sahifada ishlayapti. Backend — Comet'ning mock API'si va $db, ma'lumotlar brauzeringizda saqlanadi.</span>
+    <span c-lang="ru">Каждый пример работает прямо на этой странице. Бэкенд — mock API и $db, данные хранятся в вашем браузере.</span>
+    <span c-lang="en">Every example runs on this page. The "backend" is Comet's mock API and $db — data is stored in your browser.</span>
+  </p>
+</section>
+
+<section class="container">
+  <!-- ═══ CRUD admin ═══ -->
+  <div class="ex" c-reveal style="margin-top:28px" c-data="{ q: '', role: '', form: false }">
+    <div class="ex-body">
+      <h3><span c-lang="uz">CRUD admin panel</span><span c-lang="ru">CRUD-админка</span><span c-lang="en">CRUD admin panel</span></h3>
+      <p><span c-lang="uz">Qidiruv, filtr, qo'shish (validatsiya + server xatolari), rolni o'zgartirish, o'chirish (tasdiq bilan) va smart sync.</span><span c-lang="ru">Поиск, фильтр, добавление (валидация + ошибки сервера), смена роли, удаление с подтверждением и smart sync.</span><span c-lang="en">Search, filter, create (validation + server errors), inline role edit, delete with confirmation and smart sync.</span></p>
+      <div class="row" style="flex-wrap:wrap;margin-bottom:12px">
+        <input class="mini-input" style="flex:1;min-width:180px" c-model="q" placeholder="Search users…">
+        <select class="lang-select" style="height:42px" c-model="role"><option value="">All roles</option><option>admin</option><option>editor</option><option>viewer</option></select>
+        <button class="btn btn-primary btn-sm" style="height:42px" @click="form = !form">{{ form ? '✕ Close' : '+ New user' }}</button>
+      </div>
+      <form c-if="form" c-transition="slide-down" c-post="/api/users" c-reset c-then="form = false; $toast('User created', 'success')" class="row" style="flex-wrap:wrap;align-items:flex-start;margin-bottom:12px">
+        <div style="flex:1;min-width:150px"><input class="mini-input" name="name" placeholder="Full name"><small class="err" c-error="name"></small></div>
+        <div style="flex:1;min-width:150px"><input class="mini-input" name="email" placeholder="email@example.com"><small class="err" c-error="email"></small></div>
+        <select class="lang-select" style="height:42px" name="role"><option>viewer</option><option>editor</option><option>admin</option></select>
+        <button class="btn btn-sm" style="height:42px" :disabled="$loading">{{ $loading ? 'Saving…' : 'Save' }}</button>
+      </form>
+      <div style="overflow-x:auto" c-get="/api/users?q={{ q }}&role={{ role }}&_sort=id&_order=desc" c-as="users" c-debounce="200">
+        <table class="users-table">
+          <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th></th></tr></thead>
+          <tbody>
+            <tr c-for="u in users" c-key="u.id">
+              <td style="color:var(--muted)">{{ u.id }}</td>
+              <td><b>{{ u.name }}</b></td>
+              <td style="color:var(--muted)">{{ u.email }}</td>
+              <td><select class="lang-select" style="height:30px;font-size:12px" :value="u.role" @change="$fetch.patch('/api/users/' + u.id, { role: $event.target.value }).then(() => $toast('Role updated'))"><option>admin</option><option>editor</option><option>viewer</option></select></td>
+              <td><button class="x" c-delete="/api/users/{{ u.id }}" c-confirm="Delete this user?" aria-label="delete">×</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <p c-loading style="color:var(--muted);font-size:13px">Loading…</p>
+        <p c-empty style="color:var(--muted)">No users found.</p>
+      </div>
+    </div>
+    <div c-code="html"><script type="text/plain">
+      <script>
+        Comet.db.model('users', { validate: {
+          name:  (v) => (v && v.length >= 2) || 'Name is required',
+          email: (v) => /^\S+@\S+\.\S+$/.test(v || '') || 'Valid email required',
+        } });
+        Comet.mock.crud('/api/users', 'users');   // ← delete this line when the real API is ready
+      <\/script>
+
+      <div c-data="{ q: '', role: '' }">
+        <input c-model="q" placeholder="Search users…">
+        <select c-model="role">…</select>
+
+        <form c-post="/api/users" c-reset c-then="$toast('User created')">
+          <input name="name"><small c-error="name"></small>
+          <input name="email"><small c-error="email"></small>
+          <button :disabled="$loading">Save</button>
+        </form>
+
+        <table c-get="/api/users?q={{ q }}&role={{ role }}" c-as="users" c-debounce="200">
+          <tr c-for="u in users" c-key="u.id">
+            <td>{{ u.name }}</td>
+            <td><button c-delete="/api/users/{{ u.id }}" c-confirm="Delete?">×</button></td>
+          </tr>
+        </table>
+      </div>
+    </script></div>
+  </div>
+
+  <div class="ex-grid">
+    <!-- ═══ Todo ═══ -->
+    <div class="ex" c-reveal c-data="{ todos: $db.demo_todos.orderBy('id', 'desc').live(), title: '', filter: 'all',
+         get shown() { return this.todos.filter(t => this.filter === 'all' || (this.filter === 'done') === t.done) } }">
+      <div class="ex-body">
+        <h3><span c-lang="uz">Todo — $db bilan</span><span c-lang="ru">Todo на $db</span><span c-lang="en">Todo with $db</span></h3>
+        <p><span c-lang="uz">Jonli so'rov, filtrlar, tablar orasida sinxron. Sahifani yangilang — hammasi joyida.</span><span c-lang="ru">Живой запрос, фильтры, синхронизация вкладок. Обновите страницу — всё на месте.</span><span c-lang="en">Live query, filters, cross-tab sync. Reload — it's all still there.</span></p>
+        <form @submit.prevent="title.trim() && $db.demo_todos.add({ title }); title = ''"><input class="mini-input" c-model="title" placeholder="What needs to be done?"></form>
+        <div class="row" style="margin-top:10px;justify-content:space-between">
+          <div class="seg"><button c-for="f in ['all', 'open', 'done']" :class="{ on: filter === f }" @click="filter = f">{{ f }}</button></div>
+          <small style="color:var(--muted)">{{ todos.filter(t => !t.done).length }} left</small>
+        </div>
+        <ul class="mini-list">
+          <li c-for="t in shown" c-key="t.id">
+            <label class="check"><input type="checkbox" :checked="t.done" @change="$db.demo_todos.update(t.id, { done: !t.done })"><span :class="{ 'done-t': t.done }">{{ t.title }}</span></label>
+            <button class="x" @click="$db.demo_todos.delete(t.id)">×</button>
+          </li>
+        </ul>
+        <button class="btn btn-sm" style="margin-top:10px" c-show="todos.some(t => t.done)" @click="$db.demo_todos.where({ done: true }).delete()">Clear completed</button>
+      </div>
+      <div c-code="html"><script type="text/plain">
+        <div c-data="{ todos: $db.todos.live(), title: '' }">
+          <form @submit.prevent="$db.todos.add({ title }); title = ''">
+            <input c-model="title">
+          </form>
+          <li c-for="t in todos" c-key="t.id">
+            <input type="checkbox" :checked="t.done"
+                   @change="$db.todos.update(t.id, { done: !t.done })">
+            {{ t.title }}
+          </li>
+        </div>
+      </script></div>
+    </div>
+
+    <!-- ═══ Chat ═══ -->
+    <div class="ex" c-reveal="up 100" c-live.append="broadcast:comet-examples-chat" c-as="messages" c-max="50" c-data="{ text: '', me: 'Guest ' + Math.floor(Math.random() * 90 + 10) }">
+      <div class="ex-body">
+        <h3><span c-lang="uz">Real vaqtdagi chat</span><span c-lang="ru">Чат в реальном времени</span><span c-lang="en">Realtime chat</span></h3>
+        <p><span c-lang="uz">Sahifani ikkinchi tabda oching va yozing. WebSocket uchun manzilni <code>wss://…</code> ga almashtiring.</span><span c-lang="ru">Откройте страницу во второй вкладке и пишите. Для WebSocket замените адрес на <code>wss://…</code>.</span><span c-lang="en">Open this page in a second tab and type. For WebSocket, swap the URL for <code>wss://…</code>.</span></p>
+        <div class="chat">
+          <p c-show="!messages.length" style="color:var(--muted);margin:auto;font-size:14px">👋 Say hi</p>
+          <div c-for="m in messages" class="msg" :class="{ me: m.user === me }"><small>{{ m.user }} · {{ $fmt.time(m.at) }}</small>{{ m.text }}</div>
+        </div>
+        <form class="row" @submit.prevent="text.trim() && $send({ user: me, text, at: Date.now() }); text = ''">
+          <input class="mini-input" c-model="text" :placeholder="'Message as ' + me">
+          <button class="btn btn-primary btn-sm" style="height:42px">Send</button>
+        </form>
+      </div>
+      <div c-code="html"><script type="text/plain">
+        <div c-live.append="broadcast:chat" c-as="messages"
+             c-data="{ text: '', me: 'Guest' }">
+          <div c-for="m in messages">{{ m.user }}: {{ m.text }}</div>
+          <form @submit.prevent="$send({ user: me, text }); text = ''">
+            <input c-model="text">
+          </form>
+        </div>
+      </script></div>
+    </div>
+
+    <!-- ═══ Cart store ═══ -->
+    <div class="ex" c-reveal>
+      <div class="ex-body" c-data="{ products: [
+          { id: 1, name: 'Ceramic mug', price: 12 }, { id: 2, name: 'Notebook', price: 8.5 },
+          { id: 3, name: 'Desk lamp', price: 39 }, { id: 4, name: 'Plant', price: 21 } ] }">
+        <h3><span c-lang="uz">Savat — $store + persist</span><span c-lang="ru">Корзина — $store + persist</span><span c-lang="en">Cart — $store + persist</span></h3>
+        <p><span c-lang="uz">Global holat, computed jami narx, localStorage. Valyuta tilga mos formatlanadi.</span><span c-lang="ru">Глобальное состояние, вычисляемая сумма, localStorage. Валюта форматируется по языку.</span><span c-lang="en">Global state, computed total, localStorage. Currency is formatted for the current language.</span></p>
+        <ul class="mini-list">
+          <li c-for="p in products" c-key="p.id">{{ p.name }} <small>{{ $fmt.currency(p.price) }}</small><button class="btn btn-sm" style="height:28px" @click="$store.cart.add(p)">+</button></li>
+        </ul>
+        <p style="margin:14px 0 0">🛒 <b>{{ $store.cart.count }}</b> items · <b>{{ $fmt.currency($store.cart.total) }}</b>
+          <button class="x" style="float:right;font-size:13px" c-show="$store.cart.count" @click="$store.cart.clear()">clear</button></p>
+      </div>
+      <div c-code="js"><script type="text/plain">
+        Comet.store('cart', {
+          items: [],
+          get count() { return this.items.reduce((n, i) => n + i.qty, 0) },
+          get total() { return this.items.reduce((s, i) => s + i.qty * i.price, 0) },
+          add(p) {
+            const row = this.items.find((i) => i.id === p.id);
+            row ? row.qty++ : this.items.push({ ...p, qty: 1 });
+          },
+          clear() { this.items = [] },
+        }, { persist: true });
+      </script></div>
+    </div>
+
+    <!-- ═══ UI kit: tabs, modal, toast ═══ -->
+    <div class="ex" c-reveal="up 100" c-data="{ tab: 'profile', modal: false }">
+      <div class="ex-body">
+        <h3><span c-lang="uz">Tablar, modal, toast</span><span c-lang="ru">Табы, модалка, toast</span><span c-lang="en">Tabs, modal, toast</span></h3>
+        <p><span c-lang="uz">Teleport, transition, Esc bilan yopish, tashqariga bosish va hotkey.</span><span c-lang="ru">Teleport, transition, закрытие по Esc, клик снаружи и hotkey.</span><span c-lang="en">Teleport, transitions, Esc to close, click outside and a hotkey.</span></p>
+        <div class="seg"><button c-for="t in ['profile', 'security', 'billing']" :class="{ on: tab === t }" @click="tab = t">{{ t }}</button></div>
+        <div style="min-height:70px;padding:14px 4px">
+          <p c-if="tab === 'profile'" c-transition="fade" style="margin:0">👤 Aziza Karimova — Tashkent</p>
+          <p c-else-if="tab === 'security'" c-transition="fade" style="margin:0">🔐 2FA is on. Last login {{ $fmt.relative(Date.now() - 3600e3 * 5) }}.</p>
+          <p c-else c-transition="fade" style="margin:0">💳 Pro plan · {{ $fmt.currency(19) }}/mo</p>
+        </div>
+        <button class="btn btn-sm" @click="modal = true" c-hotkey="shift+m">Open modal <kbd>⇧M</kbd></button>
+        <div c-teleport="body" c-show="modal" c-transition="fade" class="palette-wrap" @click.self="modal = false" @keydown.esc.window="modal = false">
+          <div class="palette" style="padding:26px" c-show="modal" c-transition="scale">
+            <h3 style="margin:0 0 8px">Delete project?</h3>
+            <p style="color:var(--muted);margin:0 0 18px">This modal was teleported to &lt;body&gt; and keeps its scope.</p>
+            <div class="row" style="justify-content:flex-end">
+              <button class="btn btn-sm" @click="modal = false">Cancel</button>
+              <button class="btn btn-primary btn-sm" @click="modal = false; $toast('Project deleted', 'success')">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div c-code="html"><script type="text/plain">
+        <button @click="modal = true" c-hotkey="shift+m">Open</button>
+        <div c-teleport="body" c-show="modal" c-transition="fade"
+             @click.self="modal = false" @keydown.esc.window="modal = false">
+          <div class="dialog">
+            <button @click="modal = false; $toast('Deleted!', 'success')">Delete</button>
+          </div>
+        </div>
+      </script></div>
+    </div>
+  </div>
+</section>
+<script>
+  if (!Comet.store('cart')) {
+    Comet.store('cart', {
+      items: [],
+      get count() { return this.items.reduce((n, i) => n + i.qty, 0) },
+      get total() { return this.items.reduce((s, i) => s + i.qty * i.price, 0) },
+      add(p) { const row = this.items.find((i) => i.id === p.id); row ? row.qty++ : this.items.push({ ...p, qty: 1 }) },
+      clear() { this.items = [] },
+    }, { persist: true });
+  }
+</script>

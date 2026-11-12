@@ -1,0 +1,109 @@
+<title>Database ($db)</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Ma'lumotlar bazasi — $db</span><span c-lang="ru">База данных — $db</span><span c-lang="en">Database — $db</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Brauzer ichidagi ORM: IndexedDB'da saqlanadi, xotirada ishlaydi, jonli so'rovlar va tablar orasida sinxron.</span>
+    <span c-lang="ru">ORM в браузере: хранит в IndexedDB, работает в памяти, живые запросы и синхронизация между вкладками.</span>
+    <span c-lang="en">An ORM in the browser: persisted to IndexedDB, queried in memory, with live queries and cross-tab sync.</span>
+  </p>
+  <div class="callout"><b>ℹ</b>
+    <p c-lang="uz"><code>$db</code> — har bir foydalanuvchining <b>o'z brauzeridagi</b> baza. U offline ilovalar, qoralamalar, sozlamalar, kesh va prototiplar uchun. Foydalanuvchilar o'rtasida umumiy ma'lumot uchun server kerak (Comet Server — roadmap'da, xuddi shu sintaksis bilan).</p>
+    <p c-lang="ru"><code>$db</code> — база <b>в браузере каждого пользователя</b>. Для офлайн-приложений, черновиков, настроек, кэша и прототипов. Для общих данных нужен сервер (Comet Server в roadmap — с тем же синтаксисом).</p>
+    <p c-lang="en"><code>$db</code> lives <b>in each user's own browser</b>. Use it for offline apps, drafts, settings, caches and prototypes. Data shared between users needs a server (Comet Server is on the roadmap, with the same syntax).</p>
+  </div>
+
+  <h2 id="crud">CRUD</h2>
+  <div c-code="js"><script type="text/plain">
+    const todo = await Comet.db.todos.add({ title: 'Buy milk' });   // → { id: 1, title: 'Buy milk' }
+    await Comet.db.todos.add([{ title: 'A' }, { title: 'B' }]);    // bulk insert
+
+    await Comet.db.todos.find(1);                 // one row or null
+    await Comet.db.todos.all();                   // every row
+    await Comet.db.todos.update(1, { done: true }); // merge patch
+    await Comet.db.todos.put({ id: 1, title: 'Replaced' });
+    await Comet.db.todos.delete(1);
+    await Comet.db.todos.clear();
+    await Comet.db.todos.count();
+  </script></div>
+  <p c-lang="uz">Jadval birinchi murojaatda avtomatik yaratiladi. <code>id</code> avtomatik oshib boradi. Shablonlarda <code>$db</code> ishlating.</p>
+  <p c-lang="ru">Таблица создаётся при первом обращении. <code>id</code> — автоинкремент. В шаблонах используйте <code>$db</code>.</p>
+  <p c-lang="en">Tables are created on first use. <code>id</code> auto-increments. In templates use <code>$db</code>.</p>
+
+  <h2 id="queries"><span c-lang="uz">So'rovlar</span><span c-lang="ru">Запросы</span><span c-lang="en">Queries</span></h2>
+  <div c-code="js"><script type="text/plain">
+    await $db.users
+      .where({ role: 'admin', age: { gte: 18 } })
+      .where('name', 'like', 'ali')
+      .orderBy('createdAt', 'desc')
+      .limit(20).offset(40)            // or .page(3, 20)
+      .get();
+
+    await $db.users.where({ role: ['admin', 'editor'] }).count(); // array = "in"
+    await $db.users.search('tashkent').first();                   // full-text over string fields
+    await $db.users.where((u) => u.tags.includes('vip')).get();   // any function
+    await $db.todos.where({ done: true }).delete();               // bulk delete
+    await $db.todos.where({ done: false }).update({ done: true }); // bulk update
+  </script></div>
+  <table>
+    <tr><th><span c-lang="uz">Operator</span><span c-lang="ru">Оператор</span><span c-lang="en">Operator</span></th><th><span c-lang="uz">Misol</span><span c-lang="ru">Пример</span><span c-lang="en">Example</span></th></tr>
+    <tr><td><code>eq ne gt gte lt lte</code></td><td><code>{ age: { gt: 18, lte: 65 } }</code></td></tr>
+    <tr><td><code>in nin</code></td><td><code>{ role: { in: ['a', 'b'] } }</code></td></tr>
+    <tr><td><code>like contains startsWith endsWith</code></td><td><code>{ name: { like: 'ali' } }</code></td></tr>
+    <tr><td><code>between exists</code></td><td><code>{ price: { between: [10, 50] } }</code></td></tr>
+  </table>
+
+  <h2 id="live"><span c-lang="uz">Jonli so'rovlar</span><span c-lang="ru">Живые запросы</span><span c-lang="en">Live queries</span></h2>
+  <p c-lang="uz"><code>.live()</code> reaktiv massiv qaytaradi: jadval o'zgarsa (shu yoki boshqa tabda), massiv va UI o'zi yangilanadi.</p>
+  <p c-lang="ru"><code>.live()</code> возвращает реактивный массив: при изменении таблицы (в этой или другой вкладке) массив и UI обновляются сами.</p>
+  <p c-lang="en"><code>.live()</code> returns a reactive array: when the table changes (in this tab or another), the array and the UI update themselves.</p>
+  <div c-code="html"><script type="text/plain">
+    <div c-data="{ todos: $db.todos.orderBy('id', 'desc').live(), title: '' }">
+      <form @submit.prevent="$db.todos.add({ title }); title = ''">
+        <input c-model="title">
+      </form>
+      <label c-for="t in todos" c-key="t.id">
+        <input type="checkbox" :checked="t.done" @change="$db.todos.update(t.id, { done: !t.done })">
+        {{ t.title }}
+      </label>
+      <p>{{ todos.filter(t => !t.done).length }} left</p>
+    </div>
+  </script></div>
+  <div class="demo-box" c-data="{ todos: $db.demo_todos.orderBy('id', 'desc').live(), title: '' }">
+    <div class="live-label">Live — open this page in two tabs</div>
+    <form @submit.prevent="title.trim() && $db.demo_todos.add({ title }); title = ''"><input class="mini-input" c-model="title" placeholder="+ add a todo, press Enter"></form>
+    <ul class="mini-list">
+      <li c-for="t in todos" c-key="t.id">
+        <label class="check"><input type="checkbox" :checked="t.done" @change="$db.demo_todos.update(t.id, { done: !t.done })"><span :class="{ 'done-t': t.done }">{{ t.title }}</span></label>
+        <small>{{ $fmt.relative(t.createdAt) }}</small>
+        <button class="x" @click="$db.demo_todos.delete(t.id)">×</button>
+      </li>
+    </ul>
+    <p style="color:var(--muted);font-size:14px">{{ todos.filter(t => !t.done).length }} left · {{ todos.length }} total</p>
+  </div>
+
+  <h2 id="models"><span c-lang="uz">Modellar</span><span c-lang="ru">Модели</span><span c-lang="en">Models</span></h2>
+  <div c-code="js"><script type="text/plain">
+    Comet.db.model('users', {
+      defaults: { role: 'viewer', tags: () => [] },
+      timestamps: true,                       // createdAt / updatedAt
+      validate: {
+        name:  (v) => (v && v.length >= 2) || 'Name is too short',
+        email: (v) => /^\S+@\S+$/.test(v) || 'Invalid email',
+      },
+    });
+
+    try { await Comet.db.users.add({ name: 'A' }) }
+    catch (e) { e.errors /* { name: 'Name is too short', email: 'Invalid email' } */ }
+
+    await Comet.db.seed('users', [{ name: 'Aziza', email: 'a@x.uz' }]); // only if the table is empty
+  </script></div>
+  <p c-lang="uz">Validatsiya xatolari mock API orqali avtomatik <b>422</b> javobiga aylanadi va formalardagi <code>c-error</code> maydonlarida ko'rinadi.</p>
+  <p c-lang="ru">Ошибки валидации через mock API автоматически превращаются в ответ <b>422</b> и появляются в полях <code>c-error</code> форм.</p>
+  <p c-lang="en">Validation errors automatically become a <b>422</b> through the mock API and show up in your forms' <code>c-error</code> fields.</p>
+
+  <h2 id="events"><span c-lang="uz">O'zgarishlarni tinglash</span><span c-lang="ru">Подписка на изменения</span><span c-lang="en">Listening for changes</span></h2>
+  <div c-code="js"><script type="text/plain">
+    const off = Comet.db.todos.on(({ table, local }) => console.log(table, 'changed', local ? 'here' : 'in another tab'));
+    off(); // unsubscribe
+  </script></div>
+</div>

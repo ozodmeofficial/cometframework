@@ -62,4 +62,13 @@ test('$db live queries + persistence', async () => {
   await page.waitForFunction(() => document.querySelector('#donecount').textContent === '1');
 });
 
+test('mock.crud ignores empty filters, applies real ones', async () => {
+  const r = await page.evaluate(async () => [
+    (await Comet.fetch('/api/todos?done=')).length,
+    (await Comet.fetch('/api/todos?done=true')).length,
+    (await Comet.fetch('/api/todos?_sort=title&_order=desc'))[0].title,
+  ]);
+  assert.deepEqual(r, [2, 1, 'Done one']);
+});
+
 test('no runtime errors', () => { assert.deepEqual(errors, []); });

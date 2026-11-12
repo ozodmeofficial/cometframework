@@ -1,0 +1,75 @@
+<title>Internationalization</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Tarjima (i18n)</span><span c-lang="ru">Переводы (i18n)</span><span c-lang="en">Internationalization</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Ko'p tilli saytlar uchun hamma narsa: tarjimalar, til aniqlash, ko'plik shakllari va formatlash. Bu sayt uch tilda aynan shu bilan ishlaydi.</span>
+    <span c-lang="ru">Всё для многоязычных сайтов: переводы, определение языка, плюрализация и форматирование. Этот сайт на трёх языках работает именно так.</span>
+    <span c-lang="en">Everything for multilingual sites: translations, language detection, plurals and formatting. This site runs in three languages on exactly this.</span>
+  </p>
+
+  <h2 id="setup"><span c-lang="uz">Sozlash</span><span c-lang="ru">Настройка</span><span c-lang="en">Setup</span></h2>
+  <div c-code="js"><script type="text/plain">
+    // translations in files: locales/uz.json, locales/ru.json, locales/en.json
+    Comet.i18n({ langs: ['uz', 'ru', 'en'], default: 'en', load: 'locales/{lang}.json' });
+
+    // …or inline
+    Comet.i18n({
+      default: 'en',
+      messages: {
+        en: { hello: 'Hello, {name}!', cart: { one: '{count} item', other: '{count} items' } },
+        uz: { hello: 'Salom, {name}!', cart: { other: '{count} ta mahsulot' } },
+      },
+    });
+  </script></div>
+  <p c-lang="uz">Til tartibi: saqlangan tanlov → brauzer tili → <code>default</code>. Tanlov localStorage'da eslab qolinadi, <code>&lt;html lang&gt;</code> avtomatik yangilanadi. Tarjimalar sahifa chizilishidan oldin yuklanadi — kalitlar ko'rinib qolmaydi.</p>
+  <p c-lang="ru">Порядок выбора языка: сохранённый → язык браузера → <code>default</code>. Выбор запоминается в localStorage, <code>&lt;html lang&gt;</code> обновляется. Переводы загружаются до отрисовки — ключи не мелькают.</p>
+  <p c-lang="en">Language order: saved choice → browser language → <code>default</code>. The choice is remembered in localStorage and <code>&lt;html lang&gt;</code> is updated. Translations load before the first render — keys never flash.</p>
+
+  <h2 id="usage"><span c-lang="uz">Foydalanish</span><span c-lang="ru">Использование</span><span c-lang="en">Usage</span></h2>
+  <div c-code="html"><script type="text/plain">
+    <h1>{{ $t('hello', { name: user.name }) }}</h1>
+    <p c-t="nav.docs"></p>                                  <!-- textContent -->
+    <input c-t:placeholder="search.placeholder">            <!-- an attribute -->
+    <span>{{ $t('cart', { count: items.length }) }}</span>  <!-- plurals via Intl.PluralRules -->
+
+    <select c-model="$lang">
+      <option value="uz">O'zbek</option><option value="ru">Русский</option><option value="en">English</option>
+    </select>
+  </script></div>
+
+  <h2 id="c-lang"><span c-lang="uz">Butun bloklarni tarjima qilish: c-lang</span><span c-lang="ru">Перевод целых блоков: c-lang</span><span c-lang="en">Translating whole blocks: c-lang</span></h2>
+  <p c-lang="uz">Uzun matnlar uchun JSON kalitlari noqulay. <code>c-lang</code> bilan har bir tildagi variantni to'g'ridan-to'g'ri HTML'da yozing — faqat joriy til ko'rinadi. Bu CSS orqali ishlaydi, shuning uchun miltillash yo'q. Ushbu hujjatlar aynan shunday yozilgan.</p>
+  <p c-lang="ru">Для длинных текстов ключи JSON неудобны. С <code>c-lang</code> пишите варианты на каждом языке прямо в HTML — виден только текущий. Работает через CSS, без мерцания. Эта документация написана именно так.</p>
+  <p c-lang="en">JSON keys are awkward for long text. With <code>c-lang</code> you write each language's version right in the HTML and only the current one is shown. It's CSS-driven, so there's no flicker. These docs are written exactly this way.</p>
+  <div c-code="html"><script type="text/plain">
+    <p c-lang="uz">Comet — build talab qilmaydigan freymwork.</p>
+    <p c-lang="ru">Comet — фреймворк без сборки.</p>
+    <p c-lang="en">Comet is a build-free framework.</p>
+  </script></div>
+
+  <h2 id="fmt"><span c-lang="uz">Formatlash: $fmt</span><span c-lang="ru">Форматирование: $fmt</span><span c-lang="en">Formatting: $fmt</span></h2>
+  <p c-lang="uz">Joriy tilga mos <code>Intl</code> formatlari (keshlanadi):</p>
+  <p c-lang="ru">Форматы <code>Intl</code> для текущего языка (с кэшированием):</p>
+  <p c-lang="en"><code>Intl</code> formatting for the current language (cached):</p>
+  <div class="demo-box">
+    <div class="live-label">Live — switch the language in the header</div>
+    <table>
+      <tr><td><code>$fmt.number(1234567.891)</code></td><td>{{ $fmt.number(1234567.891) }}</td></tr>
+      <tr><td><code>$fmt.currency(99.5, 'EUR')</code></td><td>{{ $fmt.currency(99.5, 'EUR') }}</td></tr>
+      <tr><td><code>$fmt.percent(0.256)</code></td><td>{{ $fmt.percent(0.256) }}</td></tr>
+      <tr><td><code>$fmt.compact(1530000)</code></td><td>{{ $fmt.compact(1530000) }}</td></tr>
+      <tr><td><code>$fmt.date(Date.now(), 'long')</code></td><td>{{ $fmt.date(Date.now(), 'long') }}</td></tr>
+      <tr><td><code>$fmt.time(Date.now())</code></td><td>{{ $fmt.time(Date.now()) }}</td></tr>
+      <tr><td><code>$fmt.relative(Date.now() - 7200000)</code></td><td>{{ $fmt.relative(Date.now() - 7200000) }}</td></tr>
+      <tr><td><code>$fmt.list(['HTML', 'CSS', 'JS'])</code></td><td>{{ $fmt.list(['HTML', 'CSS', 'JS']) }}</td></tr>
+    </table>
+  </div>
+
+  <h2 id="js"><span c-lang="uz">JavaScript'dan</span><span c-lang="ru">Из JavaScript</span><span c-lang="en">From JavaScript</span></h2>
+  <div c-code="js"><script type="text/plain">
+    Comet.t('hello', { name: 'Ann' });
+    Comet.lang;              // 'uz'
+    Comet.lang = 'ru';       // or await Comet.setLang('ru')
+    document.addEventListener('comet:lang', (e) => console.log(e.detail.lang));
+  </script></div>
+</div>

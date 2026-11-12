@@ -1,0 +1,89 @@
+<title>Quick start</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Tez start: 5 daqiqada ilova</span><span c-lang="ru">Быстрый старт: приложение за 5 минут</span><span c-lang="en">Quick start: an app in 5 minutes</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Biz vazifalar ro'yxati (todo) ilovasini yaratamiz: sahifalar, API, saqlash va tarjima bilan. Backend'siz.</span>
+    <span c-lang="ru">Создадим список задач: со страницами, API, сохранением и переводом. Без бэкенда.</span>
+    <span c-lang="en">We'll build a todo app with pages, an API, persistence and translations. No backend.</span>
+  </p>
+
+  <h2 id="step-1"><span c-lang="uz">1. index.html</span><span c-lang="ru">1. index.html</span><span c-lang="en">1. index.html</span></h2>
+  <p c-lang="uz">Bu ilovaning "qobig'i": navigatsiya va sahifalar chiqadigan <code>c-view</code> joyi.</p>
+  <p c-lang="ru">Это «оболочка» приложения: навигация и место <code>c-view</code>, куда выводятся страницы.</p>
+  <p c-lang="en">This is the app shell: navigation plus the <code>c-view</code> outlet where pages render.</p>
+  <div c-code="html" data-file="index.html"><script type="text/plain">
+    <!doctype html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Todos</title>
+      <script src="https://cdn.jsdelivr.net/gh/ozodmeofficial/cometframework@main/dist/comet.min.js"><\/script>
+      <script src="app.js"><\/script>
+    </head>
+    <body>
+      <nav>
+        <a href="./" c-active="font-bold">Todos</a>
+        <a href="about" c-active="font-bold">About</a>
+      </nav>
+      <main c-view></main>
+    </body>
+    </html>
+  </script></div>
+
+  <h2 id="step-2"><span c-lang="uz">2. Soxta backend (app.js)</span><span c-lang="ru">2. Фейковый бэкенд (app.js)</span><span c-lang="en">2. A fake backend (app.js)</span></h2>
+  <p c-lang="uz">Bitta qator — va sizda <code>/api/todos</code> uchun to'liq REST API bor. Ma'lumotlar brauzerning IndexedDB bazasida saqlanadi.</p>
+  <p c-lang="ru">Одна строка — и у вас полноценный REST API для <code>/api/todos</code>. Данные хранятся в IndexedDB браузера.</p>
+  <p c-lang="en">One line gives you a full REST API at <code>/api/todos</code>, stored in the browser's IndexedDB.</p>
+  <div c-code="js" data-file="app.js"><script type="text/plain">
+    Comet.db.model('todos', {
+      defaults: { done: false },
+      validate: { title: (v) => (v && v.length > 1) || 'Too short' },
+    });
+    Comet.mock.crud('/api/todos', 'todos');
+  </script></div>
+
+  <h2 id="step-3"><span c-lang="uz">3. Bosh sahifa</span><span c-lang="ru">3. Главная страница</span><span c-lang="en">3. The home page</span></h2>
+  <div c-code="html" data-file="pages/index.html"><script type="text/plain">
+    <title>My todos</title>
+
+    <form c-post="/api/todos" c-reset>
+      <input name="title" placeholder="What needs doing?" required>
+      <small c-error="title"></small>
+      <button :disabled="$loading">Add</button>
+    </form>
+
+    <ul c-get="/api/todos?_sort=id&_order=desc" c-as="todos">
+      <li c-loading>Loading…</li>
+      <li c-empty>Nothing to do 🎉</li>
+      <li c-for="t in todos" c-key="t.id">
+        <input type="checkbox" :checked="t.done"
+               @change="$fetch.patch('/api/todos/' + t.id, { done: !t.done })">
+        {{ t.title }}
+        <button @click="$fetch.delete('/api/todos/' + t.id)">×</button>
+      </li>
+    </ul>
+  </script></div>
+  <p c-lang="uz">E'tibor bering: forma yuborilganda yoki element o'chirilganda ro'yxat <b>o'zi yangilanadi</b>. Bu "smart sync": <code>POST/PATCH/DELETE /api/todos…</code> muvaffaqiyatli bo'lsa, shu resursga qarab turgan barcha <code>c-get</code>'lar qayta so'raladi.</p>
+  <p c-lang="ru">Заметьте: после отправки формы или удаления список <b>обновляется сам</b>. Это «smart sync»: после успешного <code>POST/PATCH/DELETE /api/todos…</code> все <code>c-get</code>, смотрящие на этот ресурс, перезапрашиваются.</p>
+  <p c-lang="en">Notice the list <b>refreshes by itself</b> after you submit or delete. That's "smart sync": after a successful <code>POST/PATCH/DELETE /api/todos…</code>, every <code>c-get</code> watching that resource refetches.</p>
+
+  <h2 id="step-4"><span c-lang="uz">4. Ikkinchi sahifa</span><span c-lang="ru">4. Вторая страница</span><span c-lang="en">4. A second page</span></h2>
+  <div c-code="html" data-file="pages/about.html"><script type="text/plain">
+    <title>About</title>
+    <h1>About</h1>
+    <p>You are on {{ $route.path }}. No page reload happened.</p>
+  </script></div>
+
+  <h2 id="step-5"><span c-lang="uz">5. Ishga tushiring</span><span c-lang="ru">5. Запустите</span><span c-lang="en">5. Run it</span></h2>
+  <div c-code="bash"><script type="text/plain">
+    npx serve -s .
+  </script></div>
+  <p c-lang="uz">Tayyor! Sizda SPA router, forma validatsiyasi, server xatolari, loading/empty holatlari, avtomatik sinxronlash va doimiy saqlanadigan ma'lumotlar bor — 30 qatordan kam kodda.</p>
+  <p c-lang="ru">Готово! У вас есть SPA-роутер, валидация форм, ошибки сервера, состояния loading/empty, автосинхронизация и постоянное хранение — меньше чем в 30 строках.</p>
+  <p c-lang="en">Done! You have an SPA router, form validation, server errors, loading/empty states, auto-sync and persistent data — in under 30 lines.</p>
+  <div class="callout"><b>🚀</b>
+    <p c-lang="uz">Haqiqiy backend tayyor bo'lganda <code>Comet.mock.crud(…)</code> qatorini o'chiring — HTML o'zgarmaydi. Boshqa domendagi API uchun: <code>Comet.http.base = 'https://api.example.com'</code>.</p>
+    <p c-lang="ru">Когда настоящий бэкенд готов, удалите строку <code>Comet.mock.crud(…)</code> — HTML не меняется. Для API на другом домене: <code>Comet.http.base = 'https://api.example.com'</code>.</p>
+    <p c-lang="en">When the real backend is ready, delete the <code>Comet.mock.crud(…)</code> line — the HTML doesn't change. For an API on another domain: <code>Comet.http.base = 'https://api.example.com'</code>.</p>
+  </div>
+</div>

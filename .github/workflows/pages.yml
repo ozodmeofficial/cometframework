@@ -1,0 +1,64 @@
+name: Test & deploy site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node scripts/build.mjs
+      - name: Use a static <base> on GitHub Pages (no preload misses on deep links)
+        run: |
+          BASE="/${GITHUB_REPOSITORY#*/}/"
+          if [ -f site/CNAME ]; then BASE="/"; fi
+          for f in site/index.html site/404.html; do
+            sed -i "s#<script>(function(){var h=location.hostname.*</script>#<base href=\"$BASE\">#" "$f"
+          done
+          grep -n '<base' site/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Purge jsDelivr cache for @main
+        run: |
+          for f in comet.min.js comet.js; do
+            curl -fsS "https://purge.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/dist/$f" >/dev/null || true
+          done

@@ -1,0 +1,61 @@
+<title>Mock backend</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Mock backend</span><span c-lang="ru">Mock-бэкенд</span><span c-lang="en">Mock backend</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Backend hali tayyor emasmi? API'ni brauzerning o'zida e'lon qiling. Frontend kodi haqiqiy server bilan bir xil bo'lib qoladi.</span>
+    <span c-lang="ru">Бэкенд ещё не готов? Объявите API прямо в браузере. Код фронтенда останется таким же, как с настоящим сервером.</span>
+    <span c-lang="en">Backend not ready yet? Declare the API inside the browser. Your frontend code stays exactly the same as with a real server.</span>
+  </p>
+
+  <h2 id="routes"><span c-lang="uz">Endpointlar</span><span c-lang="ru">Эндпоинты</span><span c-lang="en">Endpoints</span></h2>
+  <div c-code="js"><script type="text/plain">
+    Comet.mock({
+      'GET /api/products': ({ query }) => products.filter((p) => p.name.includes(query.q || '')),
+      'GET /api/products/:id': ({ params }) =>
+        products.find((p) => p.id == params.id) || Comet.mock.error(404, 'Product not found'),
+      'POST /api/login': ({ body }) => {
+        if (body.password !== 'secret') Comet.mock.error(401, 'Wrong password');
+        return { token: 'abc123', user: { name: body.email } };
+      },
+      'DELETE /api/session': () => {},                                // 204 No Content
+      'GET /api/report': () => Comet.mock.reply(202, { queued: true }), // custom status
+      'GET /partials/hello': () => '<b>Hello from HTML</b>',          // HTML responses
+    }, { delay: [100, 400] });                                        // realistic latency
+  </script></div>
+  <p c-lang="uz">Handler <code>{ params, query, body, headers, method, url }</code> oladi va qiymat qaytaradi (sinxron yoki <code>async</code>). Qaytarilgan obyekt JSON bo'ladi; <code>POST</code> uchun status 201.</p>
+  <p c-lang="ru">Обработчик получает <code>{ params, query, body, headers, method, url }</code> и возвращает значение (синхронно или <code>async</code>). Объект становится JSON; для <code>POST</code> — статус 201.</p>
+  <p c-lang="en">Handlers receive <code>{ params, query, body, headers, method, url }</code> and return a value (sync or <code>async</code>). Objects become JSON; <code>POST</code> responds 201.</p>
+
+  <h2 id="crud"><span c-lang="uz">Bir qatorda REST: mock.crud</span><span c-lang="ru">REST одной строкой: mock.crud</span><span c-lang="en">REST in one line: mock.crud</span></h2>
+  <div c-code="js"><script type="text/plain">
+    Comet.mock.crud('/api/users', 'users');   // backed by $db.users
+  </script></div>
+  <table>
+    <tr><td><code>GET /api/users</code></td><td><span c-lang="uz">Ro'yxat. Filtr: <code>?role=admin</code>, qidiruv: <code>?q=ali</code>, saralash: <code>?_sort=name&amp;_order=desc</code>, sahifa: <code>?_limit=10&amp;_page=2</code></span><span c-lang="ru">Список. Фильтр: <code>?role=admin</code>, поиск: <code>?q=ali</code>, сортировка: <code>?_sort=name&amp;_order=desc</code>, страницы: <code>?_limit=10&amp;_page=2</code></span><span c-lang="en">List. Filter: <code>?role=admin</code>, search: <code>?q=ali</code>, sort: <code>?_sort=name&amp;_order=desc</code>, paging: <code>?_limit=10&amp;_page=2</code></span></td></tr>
+    <tr><td><code>GET /api/users/:id</code></td><td><span c-lang="uz">Bitta yozuv yoki 404</span><span c-lang="ru">Одна запись или 404</span><span c-lang="en">One record or 404</span></td></tr>
+    <tr><td><code>POST /api/users</code></td><td><span c-lang="uz">Yaratish (model validatsiyasi → 422)</span><span c-lang="ru">Создание (валидация модели → 422)</span><span c-lang="en">Create (model validation → 422)</span></td></tr>
+    <tr><td><code>PUT · PATCH /api/users/:id</code></td><td><span c-lang="uz">Almashtirish · qisman yangilash</span><span c-lang="ru">Замена · частичное обновление</span><span c-lang="en">Replace · partial update</span></td></tr>
+    <tr><td><code>DELETE /api/users/:id</code></td><td>204</td></tr>
+  </table>
+  <p c-lang="uz">Ma'lumot IndexedDB'da saqlanadi, shuning uchun sahifani yangilasangiz ham yo'qolmaydi. <a href="examples">Misollar</a> sahifasidagi admin panel aynan shunday ishlaydi.</p>
+  <p c-lang="ru">Данные хранятся в IndexedDB и переживают перезагрузку. Админка на странице <a href="examples">Примеры</a> работает именно так.</p>
+  <p c-lang="en">Data lives in IndexedDB, so it survives reloads. The admin panel on the <a href="examples">Examples</a> page works exactly like this.</p>
+
+  <h2 id="fetch"><span c-lang="uz">Hamma joyda ishlaydi</span><span c-lang="ru">Работает везде</span><span c-lang="en">Works everywhere</span></h2>
+  <p c-lang="uz">Mock'lar <code>window.fetch</code> darajasida ulanadi: <code>c-get</code>, <code>$fetch</code>, oddiy <code>fetch()</code>, hatto uchinchi tomon kutubxonalari ham ularni ko'radi. Mos kelmagan so'rovlar haqiqiy tarmoqqa o'tadi.</p>
+  <p c-lang="ru">Моки подключаются на уровне <code>window.fetch</code>: их видят <code>c-get</code>, <code>$fetch</code>, обычный <code>fetch()</code> и даже сторонние библиотеки. Остальные запросы идут в сеть.</p>
+  <p c-lang="en">Mocks hook in at the <code>window.fetch</code> level: <code>c-get</code>, <code>$fetch</code>, plain <code>fetch()</code> and even third-party libraries see them. Unmatched requests go to the real network.</p>
+
+  <h2 id="switch"><span c-lang="uz">Haqiqiy serverga o'tish</span><span c-lang="ru">Переход на настоящий сервер</span><span c-lang="en">Switching to the real server</span></h2>
+  <div c-code="js"><script type="text/plain">
+    // development only
+    if (location.hostname === 'localhost') {
+      Comet.mock.crud('/api/users', 'users');
+    } else {
+      Comet.http.base = 'https://api.myapp.com';
+    }
+  </script></div>
+  <p c-lang="uz">HTML'dagi <code>c-get="/api/users"</code> o'zgarmaydi. Kelajakdagi <b>Comet Server</b> ham xuddi shu handler formatidan foydalanadi — mock fayllaringiz haqiqiy backend'ga aylanadi.</p>
+  <p c-lang="ru"><code>c-get="/api/users"</code> в HTML не меняется. Будущий <b>Comet Server</b> будет использовать тот же формат обработчиков — ваши моки станут настоящим бэкендом.</p>
+  <p c-lang="en">The <code>c-get="/api/users"</code> in your HTML doesn't change. The upcoming <b>Comet Server</b> will use the same handler format — your mock files become your real backend.</p>
+</div>

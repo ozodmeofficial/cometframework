@@ -1,0 +1,391 @@
+<title>Comet — the build-free web framework</title>
+
+<!-- ═════════════ HERO ═════════════ -->
+<section class="hero">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="comet-fly" aria-hidden="true"></div>
+  <div class="container hero-grid">
+    <div>
+      <a href="roadmap" class="pill" c-reveal>
+        <b>v0.1</b>
+        <span c-lang="uz">Build yo'q. Faqat bitta script tegi →</span>
+        <span c-lang="ru">Никакой сборки. Только один тег script →</span>
+        <span c-lang="en">No build. Just one script tag →</span>
+      </a>
+      <h1 c-reveal="up 80">
+        <span c-lang="uz">Hech narsa talab qilmaydigan <em class="grad-text">freymwork.</em></span>
+        <span c-lang="ru">Фреймворк, которому <em class="grad-text">ничего не нужно.</em></span>
+        <span c-lang="en">The framework that needs <em class="grad-text">nothing.</em></span>
+      </h1>
+      <p class="lead" c-reveal="up 160">
+        <span c-lang="uz">npm yo'q, bundler yo'q, node_modules yo'q. Reaktivlik, SPA router, HTTP so'rovlar, komponentlar, lokal ma'lumotlar bazasi va mock backend — to'g'ridan-to'g'ri HTML ichida.</span>
+        <span c-lang="ru">Без npm, бандлера и node_modules. Реактивность, SPA-роутер, HTTP-запросы, компоненты, локальная база данных и mock-бэкенд — прямо в HTML.</span>
+        <span c-lang="en">No npm, no bundler, no node_modules. Reactivity, an SPA router, HTTP requests, components, a local database and a mock backend — straight from HTML.</span>
+      </p>
+      <div class="hero-cta" c-reveal="up 240">
+        <a class="btn btn-primary" href="docs/quick-start">
+          <span c-lang="uz">5 daqiqada boshlash</span><span c-lang="ru">Начать за 5 минут</span><span c-lang="en">Start in 5 minutes</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn" href="examples"><span c-lang="uz">Jonli misollar</span><span c-lang="ru">Живые примеры</span><span c-lang="en">Live examples</span></a>
+      </div>
+      <div class="snippet" c-reveal="up 300">
+        <code><span class="t">&lt;script</span> <span class="a">src</span>=<span class="s">"https://cdn.jsdelivr.net/gh/ozodmeofficial/cometframework@main/dist/comet.min.js"</span><span class="t">&gt;&lt;/script&gt;</span></code>
+        <button class="copy-btn" type="button" c-copy="'<script src=&quot;https://cdn.jsdelivr.net/gh/ozodmeofficial/cometframework@main/dist/comet.min.js&quot;></script>'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          <span class="no">copy</span><span class="ok">✓</span>
+        </button>
+      </div>
+      <div class="stats" c-stagger="90">
+        <div class="stat"><b>1</b><span c-lang="uz">script tegi</span><span c-lang="ru">тег script</span><span c-lang="en">script tag</span></div>
+        <div class="stat"><b>0</b><span c-lang="uz">build bosqichi</span><span c-lang="ru">шагов сборки</span><span c-lang="en">build steps</span></div>
+        <div class="stat" c-get="assets/size.json" c-as="size" c-cache="1m"><b>{{ size ? '≈' + Math.round(size.gzip / 1024) + ' KB' : '…' }}</b><span c-lang="uz">gzip, hammasi bilan</span><span c-lang="ru">gzip, всё включено</span><span c-lang="en">gzip, all-in</span></div>
+        <div class="stat"><b>40+</b><span c-lang="uz">imkoniyat</span><span c-lang="ru">возможностей</span><span c-lang="en">features</span></div>
+      </div>
+    </div>
+
+    <div class="window hero-demo" c-reveal="left 200" c-data="{ tab: 'both' }">
+      <div class="window-bar"><i></i><i></i><i></i><span>index.html</span>
+        <div class="tabs"><button :class="{ on: tab === 'code' }" @click="tab = 'code'">Code</button><button :class="{ on: tab === 'both' }" @click="tab = 'both'">Code + Live</button></div>
+      </div>
+      <div c-code="html"><script type="text/plain">
+        <script src="comet.min.js"><\/script>
+
+        <div c-data="{ name: 'World', count: 0 }">
+          <input c-model="name" placeholder="Your name">
+          <h2>Hello, {{ name }}! 👋</h2>
+
+          <button @click="count++">
+            Clicked {{ count }} {{ count === 1 ? 'time' : 'times' }}
+          </button>
+          <p c-show="count >= 5">🔥 You're on fire!</p>
+        </div>
+      </script></div>
+      <div class="live" c-show="tab === 'both'" c-data="{ name: 'World', count: 0 }">
+        <div class="live-label"><span c-lang="uz">Jonli natija</span><span c-lang="ru">Живой результат</span><span c-lang="en">Live result</span></div>
+        <input class="mini-input" c-model="name" placeholder="Your name">
+        <h2 style="margin:14px 0 12px;letter-spacing:-.03em">Hello, {{ name }}! 👋</h2>
+        <button class="btn btn-sm" @click="count++">Clicked {{ count }} {{ count === 1 ? 'time' : 'times' }}</button>
+        <p c-show="count >= 5" c-transition="slide-up" style="margin:12px 0 0">🔥 You're on fire!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════ WORKS WITH ═════════════ -->
+<section class="container" style="padding:30px 0 10px">
+  <p class="center" style="color:var(--muted);font-size:14px;margin:0">
+    <span c-lang="uz">Siz yaxshi ko'rgan hamma narsa bilan ishlaydi</span><span c-lang="ru">Работает со всем, что вы любите</span><span c-lang="en">Plays nicely with everything you already use</span>
+  </p>
+  <div class="chips" c-stagger="40">
+    <span class="chip"><i style="background:#38bdf8"></i>Tailwind CSS</span>
+    <span class="chip"><i style="background:#7952b3"></i>Bootstrap</span>
+    <span class="chip"><i style="background:#f59e0b"></i>Vanilla JS</span>
+    <span class="chip"><i style="background:#0769ad"></i>jQuery</span>
+    <span class="chip"><i style="background:#22c55e"></i>Any REST API</span>
+    <span class="chip"><i style="background:#ef4444"></i>Laravel · Django · Rails</span>
+    <span class="chip"><i style="background:#a855f7"></i>Firebase · Supabase</span>
+    <span class="chip"><i style="background:#14b8a6"></i>GitHub Pages · Netlify · Vercel</span>
+  </div>
+</section>
+
+<!-- ═════════════ 3 STEPS ═════════════ -->
+<section class="block container">
+  <div c-reveal>
+    <span class="eyebrow"><span c-lang="uz">Noldan ilovagacha</span><span c-lang="ru">От нуля до приложения</span><span c-lang="en">Zero to app</span></span>
+    <h2 class="h2">
+      <span c-lang="uz">Bo'sh papkadan ishlaydigan saytgacha — <em>30 soniya.</em></span>
+      <span c-lang="ru">От пустой папки до работающего сайта — <em>30 секунд.</em></span>
+      <span c-lang="en">From an empty folder to a working site in <em>30 seconds.</em></span>
+    </h2>
+  </div>
+  <div class="steps" c-stagger="100">
+    <div class="step">
+      <span class="n">01</span>
+      <h3><span c-lang="uz">Ulang</span><span c-lang="ru">Подключите</span><span c-lang="en">Add the script</span></h3>
+      <p><span c-lang="uz">Faqat index.html ga. Boshqa sahifalar oddiy HTML qismlar.</span><span c-lang="ru">Только в index.html. Остальные страницы — обычные фрагменты HTML.</span><span c-lang="en">Only in index.html. Every other page is a plain HTML fragment.</span></p>
+      <div c-code="html"><script type="text/plain">
+        <script src="…/comet.min.js"><\/script>
+        <main c-view></main>
+      </script></div>
+    </div>
+    <div class="step">
+      <span class="n">02</span>
+      <h3><span c-lang="uz">Sahifa qo'shing</span><span c-lang="ru">Добавьте страницу</span><span c-lang="en">Drop in a page</span></h3>
+      <p><span c-lang="uz">Fayl nomi = URL. Router avtomatik.</span><span c-lang="ru">Имя файла = URL. Роутер автоматический.</span><span c-lang="en">File name = URL. Routing is automatic.</span></p>
+      <div c-code="html" data-file="pages/about.html"><script type="text/plain">
+        <title>About</title>
+        <h1>About us</h1>
+      </script></div>
+    </div>
+    <div class="step">
+      <span class="n">03</span>
+      <h3><span c-lang="uz">Ma'lumot oling</span><span c-lang="ru">Получите данные</span><span c-lang="en">Fetch data</span></h3>
+      <p><span c-lang="uz">Loading va xato holatlari bilan — JavaScript yozmasdan.</span><span c-lang="ru">С состояниями загрузки и ошибок — без JavaScript.</span><span c-lang="en">With loading and error states — without writing JavaScript.</span></p>
+      <div c-code="html"><script type="text/plain">
+        <ul c-get="/api/users" c-as="users">
+          <li c-for="u in users">{{ u.name }}</li>
+        </ul>
+      </script></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════ BENTO (live demos) ═════════════ -->
+<section class="block container" style="padding-top:20px">
+  <div class="center" c-reveal>
+    <span class="eyebrow"><span c-lang="uz">Jonli demo</span><span c-lang="ru">Живое демо</span><span c-lang="en">Live, not screenshots</span></span>
+    <h2 class="h2">
+      <span c-lang="uz">Bu sahifadagi hamma narsa <em>haqiqatan ishlaydi.</em></span>
+      <span c-lang="ru">Всё на этой странице <em>действительно работает.</em></span>
+      <span c-lang="en">Everything below is <em>actually running.</em></span>
+    </h2>
+    <p class="sub"><span c-lang="uz">Backend yo'q — Comet'ning mock API va $db imkoniyatlari brauzerning o'zida ishlaydi.</span><span c-lang="ru">Бэкенда нет — mock API и $db работают прямо в браузере.</span><span c-lang="en">There's no server here — Comet's mock API and $db run inside your browser.</span></p>
+  </div>
+
+  <div class="bento">
+    <!-- c-get live search -->
+    <div class="card span-4" c-spotlight c-reveal="up" c-data="{ q: '' }">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h4l3-8 4 16 3-8h2"/></svg></div>
+      <h3><span c-lang="uz">HTTP — bitta atribut bilan</span><span c-lang="ru">HTTP — одним атрибутом</span><span c-lang="en">HTTP with one attribute</span></h3>
+      <p><span c-lang="uz">Yozing — URL reaktiv, so'rov debounce qilinadi, eski javoblar tashlanadi.</span><span c-lang="ru">Печатайте — URL реактивный, запрос с debounce, старые ответы отбрасываются.</span><span c-lang="en">Type — the URL is reactive, requests are debounced, stale responses are dropped.</span></p>
+      <div class="demo" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+        <div>
+          <input class="mini-input" c-model="q" :placeholder="$lang === 'uz' ? 'Shahar qidiring…' : $lang === 'ru' ? 'Поиск города…' : 'Search a city…'">
+          <ul class="mini-list" c-get="/api/cities?q={{ q }}" c-as="cities" c-debounce="200">
+            <template c-if="$loading && !cities"><li class="skeleton"></li><li class="skeleton"></li></template>
+            <li c-for="c in cities" c-key="c.id">📍 {{ c.name }} <small>{{ c.region }}</small></li>
+            <li c-empty style="color:var(--muted)">—</li>
+          </ul>
+        </div>
+        <div c-code="html" style="margin:0"><script type="text/plain">
+          <input c-model="q">
+          <ul c-get="/api/cities?q={{ q }}"
+              c-as="cities" c-debounce="200">
+            <li c-for="c in cities">
+              {{ c.name }}
+            </li>
+            <li c-empty>—</li>
+          </ul>
+        </script></div>
+      </div>
+    </div>
+
+    <!-- counter -->
+    <div class="card span-2" c-spotlight c-reveal="up 80" c-data="{ n: 0 }" c-persist="landing-counter">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg></div>
+      <h3><span c-lang="uz">Nozik reaktivlik</span><span c-lang="ru">Точечная реактивность</span><span c-lang="en">Fine-grained reactivity</span></h3>
+      <p><span c-lang="uz">Virtual DOM yo'q. Faqat o'zgargan tugun yangilanadi. Sahifani yangilang — qiymat saqlanadi (c-persist).</span><span c-lang="ru">Без virtual DOM. Обновляется только изменённый узел. Обновите страницу — значение сохранится (c-persist).</span><span c-lang="en">No virtual DOM — only the changed node updates. Reload the page: the value survives (c-persist).</span></p>
+      <div class="demo counter">
+        <button class="round" @click="n--" aria-label="minus">−</button>
+        <b>{{ n }}</b>
+        <button class="round" @click="n++" aria-label="plus">+</button>
+      </div>
+    </div>
+
+    <!-- $db todos -->
+    <div class="card span-2" c-spotlight c-reveal="up" c-data="{ todos: $db.demo_todos.orderBy('id', 'desc').live(), title: '' }">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
+      <h3><span c-lang="uz">Lokal ORM — $db</span><span c-lang="ru">Локальная ORM — $db</span><span c-lang="en">Local ORM — $db</span></h3>
+      <p><span c-lang="uz">IndexedDB'da saqlanadi. Ikkinchi tabda oching — jonli sinxronlanadi.</span><span c-lang="ru">Хранится в IndexedDB. Откройте вторую вкладку — синхронизация вживую.</span><span c-lang="en">Persisted in IndexedDB. Open a second tab — it syncs live.</span></p>
+      <div class="demo">
+        <form class="row" @submit.prevent="title.trim() && $db.demo_todos.add({ title }); title = ''">
+          <input class="mini-input" c-model="title" placeholder="+ todo">
+        </form>
+        <ul class="mini-list">
+          <li c-for="t in todos.slice(0, 3)" c-key="t.id">
+            <label class="check"><input type="checkbox" :checked="t.done" @change="$db.demo_todos.update(t.id, { done: !t.done })"><span :class="{ 'done-t': t.done }">{{ t.title }}</span></label>
+            <button class="x" @click="$db.demo_todos.delete(t.id)" aria-label="delete">×</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- i18n -->
+    <div class="card span-2" c-spotlight c-reveal="up 80">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div>
+      <h3>i18n + $fmt</h3>
+      <p><span c-lang="uz">Tillar, ko'plik shakllari va Intl formatlash ichida.</span><span c-lang="ru">Языки, плюрализация и форматирование Intl внутри.</span><span c-lang="en">Languages, plurals and Intl formatting built in.</span></p>
+      <div class="demo">
+        <div class="seg"><button :class="{ on: $lang === 'uz' }" @click="$lang = 'uz'">O'zbek</button><button :class="{ on: $lang === 'ru' }" @click="$lang = 'ru'">Русский</button><button :class="{ on: $lang === 'en' }" @click="$lang = 'en'">English</button></div>
+        <p style="margin-top:12px;font-family:var(--mono);font-size:13px">{{ $fmt.currency(1250000, 'UZS') }}<br>{{ $fmt.date(Date.now(), 'full') }}<br>{{ $fmt.relative(Date.now() - 180000) }}</p>
+      </div>
+    </div>
+
+    <!-- dark mode -->
+    <div class="card span-2" c-spotlight c-reveal="up 160">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></div>
+      <h3><span c-lang="uz">Dark mode — tayyor</span><span c-lang="ru">Тёмная тема — из коробки</span><span c-lang="en">Dark mode, solved</span></h3>
+      <p><span c-lang="uz">Tizimga ergashadi, tanlov saqlanadi, Tailwind dark: bilan mos, miltillamaydi.</span><span c-lang="ru">Следует системе, выбор сохраняется, совместима с dark: в Tailwind, без мерцания.</span><span c-lang="en">Follows the OS, remembers the choice, works with Tailwind dark:, no flash.</span></p>
+      <div class="demo"><div class="seg"><button :class="{ on: $theme.mode === 'light' }" @click="$theme.set('light')">☀︎ Light</button><button :class="{ on: $theme.mode === 'dark' }" @click="$theme.set('dark')">☾ Dark</button><button :class="{ on: $theme.mode === 'system' }" @click="$theme.set('system')">Auto</button></div></div>
+    </div>
+
+    <!-- routing -->
+    <div class="card span-3" c-spotlight c-reveal="up">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 17V9a4 4 0 0 1 4-4h6M18 7v8a4 4 0 0 1-4 4H8"/></svg></div>
+      <h3><span c-lang="uz">Fayllar = routelar</span><span c-lang="ru">Файлы = маршруты</span><span c-lang="en">Files are routes</span></h3>
+      <p><span c-lang="uz">Avto SPA, prefetch, layoutlar, View Transitions, sarlavha va meta, 404. Bu sayt ham shunday ishlaydi.</span><span c-lang="ru">Авто-SPA, prefetch, лейауты, View Transitions, title и meta, 404. Этот сайт работает так же.</span><span c-lang="en">Auto SPA, prefetch, layouts, View Transitions, title & meta, 404. This very site works this way.</span></p>
+      <div class="demo route-viz">
+        <div><span>/</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span>pages/index.html</span></div>
+        <div><span>/docs/routing</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span>pages/docs/routing.html</span></div>
+        <div><span>/users/42</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span>pages/users/show.html</span></div>
+      </div>
+    </div>
+
+    <!-- components -->
+    <div class="card span-3" c-spotlight c-reveal="up 80">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+      <h3><span c-lang="uz">Komponentlar — build'siz</span><span c-lang="ru">Компоненты — без сборки</span><span c-lang="en">Components, no compiler</span></h3>
+      <p><span c-lang="uz">.html fayl, props, slotlar va scoped CSS. Light DOM — Tailwind ishlaydi.</span><span c-lang="ru">Файл .html, props, слоты и scoped CSS. Light DOM — Tailwind работает.</span><span c-lang="en">A .html file with props, slots and scoped CSS. Light DOM, so Tailwind just works.</span></p>
+      <div class="demo" c-code="html" data-file="components/user-card.html" style="margin-bottom:0"><script type="text/plain">
+        <div class="card">
+          <img :src="avatar"> <b>{{ name }}</b>
+          <slot></slot>
+        </div>
+      </script></div>
+    </div>
+
+    <!-- devtools -->
+    <div class="card span-6" c-spotlight c-reveal="up" style="min-height:0;flex-direction:row;align-items:center;gap:24px;flex-wrap:wrap">
+      <div style="flex:1;min-width:260px">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M14 5l-4 14"/></svg></div>
+        <h3><span c-lang="uz">Sahifa ichidagi devtools</span><span c-lang="ru">Devtools прямо на странице</span><span c-lang="en">Devtools inside the page</span></h3>
+        <p><span c-lang="uz">Kengaytma o'rnatish shart emas. Holat, so'rovlar, routelar, xatolar va unumdorlik — Alt+Shift+D.</span><span c-lang="ru">Не нужно ставить расширение. Состояние, запросы, маршруты, ошибки и производительность — Alt+Shift+D.</span><span c-lang="en">No extension required. State, network, routes, errors and performance — press Alt+Shift+D.</span></p>
+      </div>
+      <button class="btn btn-primary" @click="$Comet.devtools()">
+        <span c-lang="uz">Devtools'ni ochish</span><span c-lang="ru">Открыть devtools</span><span c-lang="en">Open devtools</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════ ALL FEATURES ═════════════ -->
+<section class="block container" style="padding-top:20px">
+  <div c-reveal>
+    <span class="eyebrow"><span c-lang="uz">Hammasi ichida</span><span c-lang="ru">Всё включено</span><span c-lang="en">Batteries included</span></span>
+    <h2 class="h2">
+      <span c-lang="uz">{{ $store.site.features.length }} ta imkoniyat. <em>Bitta fayl.</em></span>
+      <span c-lang="ru">{{ $store.site.features.length }} возможностей. <em>Один файл.</em></span>
+      <span c-lang="en">{{ $store.site.features.length }} features. <em>One file.</em></span>
+    </h2>
+    <p class="sub"><span c-lang="uz">Odatda o'nlab paket kerak bo'ladigan narsalar — bitta skriptda va bir xil sintaksisda.</span><span c-lang="ru">То, для чего обычно нужны десятки пакетов, — в одном скрипте и с одним синтаксисом.</span><span c-lang="en">The things that usually take a dozen packages — in one script, with one consistent syntax.</span></p>
+  </div>
+  <div class="features">
+    <div class="feature" c-for="f in $store.site.features">
+      <code>{{ f.code }}</code>
+      <h4>{{ f.t[$lang] }}</h4>
+      <p>{{ f.d[$lang] }}</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════ COMPARISON ═════════════ -->
+<section class="block container" style="padding-top:20px">
+  <div c-reveal>
+    <span class="eyebrow"><span c-lang="uz">Halol taqqoslash</span><span c-lang="ru">Честное сравнение</span><span c-lang="en">Honest comparison</span></span>
+    <h2 class="h2">
+      <span c-lang="uz">Qachon Comet, qachon <em>boshqasi.</em></span>
+      <span c-lang="ru">Когда Comet, а когда — <em>другое.</em></span>
+      <span c-lang="en">When to pick Comet — and when <em>not to.</em></span>
+    </h2>
+    <p class="sub">
+      <span c-lang="uz">Comet landinglar, admin panellar, MVP, ichki tizimlar va kichik-o'rta SPA'lar uchun. Agar sizga hozir SSR/SEO va katta ekotizim kerak bo'lsa — Next.js yoki Nuxt to'g'ri tanlov.</span>
+      <span c-lang="ru">Comet — для лендингов, админок, MVP, внутренних систем и небольших и средних SPA. Если вам уже сейчас нужны SSR/SEO и огромная экосистема — выбирайте Next.js или Nuxt.</span>
+      <span c-lang="en">Comet is for landing pages, admin panels, MVPs, internal tools and small-to-medium SPAs. If you need SSR/SEO and a huge ecosystem today, Next.js or Nuxt is the right call.</span>
+    </p>
+  </div>
+  <div class="table-wrap" c-reveal="up">
+    <table class="cmp">
+      <thead><tr><th></th><th class="us">Comet</th><th>React + Next</th><th>Vue + Nuxt</th><th>SvelteKit</th><th>Alpine.js</th><th>htmx</th></tr></thead>
+      <tbody>
+        <tr><td><span c-lang="uz">Build kerakmi</span><span c-lang="ru">Нужна сборка</span><span c-lang="en">Build step required</span></td><td class="us y">No</td><td>Yes</td><td>Yes*</td><td>Yes</td><td class="y">No</td><td class="y">No</td></tr>
+        <tr><td><span c-lang="uz">Runtime (gzip, taxm.)</span><span c-lang="ru">Runtime (gzip, прибл.)</span><span c-lang="en">Runtime (gzip, approx.)</span></td><td class="us">≈28 KB <small style="color:var(--muted)">all-in</small></td><td>≈45 KB + app</td><td>≈35 KB + app</td><td>small, per app</td><td>≈15 KB</td><td>≈16 KB</td></tr>
+        <tr><td><span c-lang="uz">Fayl asosidagi router</span><span c-lang="ru">Файловый роутер</span><span c-lang="en">File-based router</span></td><td class="us y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="n">—</td><td class="p">hx-boost</td></tr>
+        <tr><td><span c-lang="uz">HTML atributlar orqali HTTP</span><span c-lang="ru">HTTP через атрибуты HTML</span><span c-lang="en">HTTP via HTML attributes</span></td><td class="us y">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
+        <tr><td><span c-lang="uz">Komponentdagi reaktiv holat</span><span c-lang="ru">Реактивное состояние</span><span c-lang="en">Client-side reactive state</span></td><td class="us y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="n">—</td></tr>
+        <tr><td><span c-lang="uz">Lokal ORM / ma'lumotlar bazasi</span><span c-lang="ru">Локальная ORM / база</span><span c-lang="en">Local ORM / database</span></td><td class="us y">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td><span c-lang="uz">Brauzerdagi mock backend</span><span c-lang="ru">Mock-бэкенд в браузере</span><span c-lang="en">In-browser mock backend</span></td><td class="us y">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td><span c-lang="uz">i18n ichida</span><span c-lang="ru">Встроенный i18n</span><span c-lang="en">Built-in i18n</span></td><td class="us y">✓</td><td class="p">plugin</td><td class="p">plugin</td><td class="p">plugin</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td><span c-lang="uz">Sahifa ichidagi devtools</span><span c-lang="ru">Devtools на странице</span><span c-lang="en">In-page devtools</span></td><td class="us y">✓</td><td class="p">extension</td><td class="p">extension</td><td class="p">extension</td><td class="p">extension</td><td class="n">—</td></tr>
+        <tr><td>SSR / SEO</td><td class="us p"><span c-lang="uz">roadmap (SSG)</span><span c-lang="ru">roadmap (SSG)</span><span c-lang="en">roadmap (SSG)</span></td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="p">server HTML</td><td class="y">server HTML</td></tr>
+        <tr><td><span c-lang="uz">Ekotizim</span><span c-lang="ru">Экосистема</span><span c-lang="en">Ecosystem</span></td><td class="us p"><span c-lang="uz">yangi</span><span c-lang="ru">новая</span><span c-lang="en">new</span></td><td class="y">huge</td><td class="y">large</td><td class="y">growing</td><td>medium</td><td>medium</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">* <span c-lang="uz">Vue'ni CDN orqali ham ishlatsa bo'ladi, lekin Nuxt build talab qiladi. Hajmlar taxminiy va versiyaga qarab o'zgaradi.</span><span c-lang="ru">Vue можно подключить через CDN, но Nuxt требует сборки. Размеры приблизительные и зависят от версии.</span><span c-lang="en">Vue can run from a CDN, but Nuxt requires a build. Sizes are approximate and vary by version.</span></p>
+</section>
+
+<!-- ═════════════ PERFORMANCE ═════════════ -->
+<section class="block container" style="padding-top:20px" c-data="bench()">
+  <div c-reveal>
+    <span class="eyebrow"><span c-lang="uz">Tezlik</span><span c-lang="ru">Скорость</span><span c-lang="en">Performance</span></span>
+    <h2 class="h2">
+      <span c-lang="uz">Marketing raqamlari emas. <em>O'zingiz o'lchang.</em></span>
+      <span c-lang="ru">Не маркетинговые цифры. <em>Измерьте сами.</em></span>
+      <span c-lang="en">No marketing numbers. <em>Measure it yourself.</em></span>
+    </h2>
+  </div>
+  <div class="bench">
+    <div class="bench-card" c-reveal="up">
+      <h3 style="margin:0 0 8px"><span c-lang="uz">Halol gap</span><span c-lang="ru">Честно</span><span c-lang="en">The honest version</span></h3>
+      <p style="color:var(--muted);margin:0">
+        <span c-lang="uz">Hech bir freymwork brauzerning o'zidan tez bo'lolmaydi, shuning uchun "React'dan 20x tez" demaymiz. Comet virtual DOM ishlatmaydi: holat o'zgarganda faqat unga bog'liq DOM tugunlari yangilanadi. Haqiqiy yutuq — ishga tushish tezligi: kompilyatsiya yo'q, bitta kichik fayl, sahifa darhol ochiladi.</span>
+        <span c-lang="ru">Ни один фреймворк не может быть быстрее самого браузера, поэтому мы не пишем «в 20 раз быстрее React». Comet не использует virtual DOM: при изменении состояния обновляются только зависимые узлы. Настоящее преимущество — скорость старта: нет компиляции, один небольшой файл, страница открывается сразу.</span>
+        <span c-lang="en">No framework can be faster than the browser itself, so we won't claim "20× faster than React". Comet has no virtual DOM: when state changes, only the DOM nodes that depend on it update. The real win is startup: nothing to compile, one small file, pages are interactive right away.</span>
+      </p>
+      <p class="note"><span c-lang="uz">Benchmark sizning brauzeringizda ishlaydi. Comet qo'lda yozilgan vanilla DOM kodi bilan solishtiriladi — bu nazariy chegara.</span><span c-lang="ru">Бенчмарк выполняется в вашем браузере. Comet сравнивается с вручную написанным vanilla DOM-кодом — теоретическим пределом.</span><span c-lang="en">The benchmark runs in your browser and compares Comet against hand-written vanilla DOM code — the theoretical floor.</span></p>
+      <button class="btn btn-primary" style="margin-top:18px" @click="run()" :disabled="running">
+        <span c-show="!running"><span c-lang="uz">Benchmarkni ishga tushirish</span><span c-lang="ru">Запустить бенчмарк</span><span c-lang="en">Run the benchmark</span></span>
+        <span c-show="running">⏱ …</span>
+      </button>
+    </div>
+    <div class="bench-card" c-reveal="up 100">
+      <h3 style="margin:0 0 4px"><span c-lang="uz">Natijalar (ms, kamroq — yaxshi)</span><span c-lang="ru">Результаты (мс, меньше — лучше)</span><span c-lang="en">Results (ms, lower is better)</span></h3>
+      <p class="note" c-show="!results.length" style="margin-top:8px"><span c-lang="uz">Natija ko'rish uchun tugmani bosing.</span><span c-lang="ru">Нажмите кнопку, чтобы увидеть результат.</span><span c-lang="en">Press the button to see results.</span></p>
+      <div c-for="r in results" style="margin-top:18px">
+        <b style="font-size:14px">{{ r.name }}</b>
+        <div class="bar-row"><span>Comet</span><div class="bar"><i :style="{ width: width(r, 'comet') }"></i></div><b>{{ r.comet.toFixed(1) }}</b></div>
+        <div class="bar-row"><span>Vanilla JS</span><div class="bar alt"><i :style="{ width: width(r, 'vanilla') }"></i></div><b>{{ r.vanilla.toFixed(1) }}</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="bench-out" aria-hidden="true">
+    <table><tbody><tr c-for="r in rows" c-key="r.id"><td>{{ r.id }}</td><td>{{ r.label }}</td></tr></tbody></table>
+    <table><tbody id="bench-vanilla"></tbody></table>
+  </div>
+</section>
+
+<!-- ═════════════ ROADMAP ═════════════ -->
+<section class="block container" style="padding-top:20px">
+  <div c-reveal>
+    <span class="eyebrow">Roadmap</span>
+    <h2 class="h2">
+      <span c-lang="uz">Frontend bugun. <em>Backend ertaga.</em></span>
+      <span c-lang="ru">Фронтенд — сегодня. <em>Бэкенд — завтра.</em></span>
+      <span c-lang="en">Frontend today. <em>Backend next.</em></span>
+    </h2>
+    <p class="sub"><span c-lang="uz">Comet Server mock API bilan bir xil sintaksisda bo'ladi — prototipdan haqiqiy serverga kodni qayta yozmasdan o'tasiz.</span><span c-lang="ru">Comet Server будет использовать тот же синтаксис, что и mock API, — переход от прототипа к настоящему серверу без переписывания.</span><span c-lang="en">Comet Server will share the mock API's syntax — move from prototype to a real server without rewriting anything.</span></p>
+  </div>
+  <div class="timeline" c-stagger="100">
+    <div class="ms now"><span class="tag">v0.1 · now</span><h4>Core</h4><ul><li>Reactivity &amp; 40+ features</li><li>Router, HTTP, $db, mocks</li><li>i18n, theme, devtools</li></ul></div>
+    <div class="ms"><span class="tag">v0.2</span><h4>CLI + SSG</h4><ul><li>comet build → prerender for SEO</li><li>TypeScript types</li><li>VS Code extension</li></ul></div>
+    <div class="ms"><span class="tag">v0.3</span><h4>Comet Server</h4><ul><li>File-based API routes</li><li>ORM: SQLite / Postgres</li><li>Auth, sessions, realtime</li></ul></div>
+    <div class="ms"><span class="tag">v1.0</span><h4>Stable</h4><ul><li>Stable API &amp; LTS</li><li>Plugin registry</li><li>Streaming SSR</li></ul></div>
+  </div>
+</section>
+
+<!-- ═════════════ CTA ═════════════ -->
+<section class="container" style="padding:40px 0 20px">
+  <div class="cta" c-reveal="zoom">
+    <h2 class="h2">
+      <span c-lang="uz">Keyingi loyihangizni <em>bugun</em> boshlang.</span>
+      <span c-lang="ru">Начните следующий проект <em>сегодня.</em></span>
+      <span c-lang="en">Start your next project <em>today.</em></span>
+    </h2>
+    <p class="sub"><span c-lang="uz">index.html yarating, bitta qator qo'shing — tayyor.</span><span c-lang="ru">Создайте index.html, добавьте одну строку — готово.</span><span c-lang="en">Create index.html, add one line — that's it.</span></p>
+    <div class="hero-cta" style="justify-content:center">
+      <a class="btn btn-primary" href="docs/quick-start"><span c-lang="uz">Hujjatlarni o'qish</span><span c-lang="ru">Читать документацию</span><span c-lang="en">Read the docs</span></a>
+      <a class="btn" href="https://github.com/ozodmeofficial/cometframework" target="_blank" rel="noopener">★ GitHub</a>
+    </div>
+  </div>
+</section>

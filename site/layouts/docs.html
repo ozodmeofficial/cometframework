@@ -1,0 +1,22 @@
+<div class="container docs" c-data="{ side: false }">
+  <aside class="docs-side" :class="{ open: side }" @click="side = false">
+    <div class="side-group" c-for="g in $store.docs.groups">
+      <h5>{{ g.group[$lang] }}</h5>
+      <a c-for="it in g.items" :href="it.slug" c-active="on">{{ it.title[$lang] }}</a>
+    </div>
+  </aside>
+  <div class="docs-main">
+    <button class="btn btn-sm docs-menu" type="button" @click="side = !side">☰ {{ $t('docs.menu') }}</button>
+    <article class="prose" c-outlet></article>
+    <nav class="pager">
+      <a c-if="$store.docs.prev" :href="$store.docs.prev.slug"><small>← {{ $t('docs.prev') }}</small><b>{{ $store.docs.prev.title[$lang] }}</b></a>
+      <a c-if="$store.docs.next" class="next" :href="$store.docs.next.slug"><small>{{ $t('docs.next') }} →</small><b>{{ $store.docs.next.title[$lang] }}</b></a>
+    </nav>
+  </div>
+  <aside class="toc">
+    <template c-if="$store.docs.toc.length">
+      <h5>{{ $t('docs.onthis') }}</h5>
+      <a c-for="h in $store.docs.toc" :href="'#' + h.id">{{ h.text }}</a>
+    </template>
+  </aside>
+</div>

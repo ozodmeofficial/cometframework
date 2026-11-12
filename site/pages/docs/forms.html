@@ -1,0 +1,108 @@
+<title>Forms</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Formalar</span><span c-lang="ru">Формы</span><span c-lang="en">Forms</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Ikki tomonlama bog'lash, validatsiya, yuborish va server xatolari — JavaScript yozmasdan.</span>
+    <span c-lang="ru">Двусторонняя привязка, валидация, отправка и ошибки сервера — без JavaScript.</span>
+    <span c-lang="en">Two-way binding, validation, submission and server errors — without writing JavaScript.</span>
+  </p>
+
+  <h2 id="c-model">c-model</h2>
+  <div c-code="html"><script type="text/plain">
+    <input c-model="name">
+    <input c-model.trim="email" type="email">
+    <input c-model.number="age" type="number">          <!-- number inputs cast automatically -->
+    <input c-model.lazy="title">                        <!-- update on change, not on every key -->
+    <input c-model.debounce.300="query">
+
+    <input type="checkbox" c-model="agree">            <!-- boolean -->
+    <input type="checkbox" value="js" c-model="skills"> <!-- array of checked values -->
+    <input type="radio" value="pro" c-model="plan">
+
+    <select c-model="country">
+      <option c-for="c in countries" :value="c.code">{{ c.name }}</option>
+    </select>
+    <select multiple c-model="tags">…</select>
+    <textarea c-model="bio"></textarea>
+    <div contenteditable c-model="note"></div>
+  </script></div>
+  <div class="demo-box" c-data="{ name: '', skills: ['html'], plan: 'free' }">
+    <div class="live-label">Live</div>
+    <input class="mini-input" c-model.trim="name" placeholder="Name">
+    <p class="row" style="gap:14px;flex-wrap:wrap">
+      <label class="check"><input type="checkbox" value="html" c-model="skills">HTML</label>
+      <label class="check"><input type="checkbox" value="css" c-model="skills">CSS</label>
+      <label class="check"><input type="checkbox" value="js" c-model="skills">JS</label>
+      <label class="check"><input type="radio" value="free" c-model="plan">Free</label>
+      <label class="check"><input type="radio" value="pro" c-model="plan">Pro</label>
+    </p>
+    <code>{{ JSON.stringify({ name, skills, plan }) }}</code>
+  </div>
+
+  <h2 id="submit"><span c-lang="uz">Formani yuborish</span><span c-lang="ru">Отправка формы</span><span c-lang="en">Submitting</span></h2>
+  <p c-lang="uz"><code>c-post</code> (yoki <code>c-put</code>, <code>c-patch</code>) qo'yilgan forma submit bo'lganda maydonlarni JSON qilib yuboradi. Fayl maydoni bo'lsa — avtomatik <code>multipart/form-data</code>.</p>
+  <p c-lang="ru">Форма с <code>c-post</code> (или <code>c-put</code>, <code>c-patch</code>) при отправке посылает поля как JSON. Если есть поле файла — автоматически <code>multipart/form-data</code>.</p>
+  <p c-lang="en">A form with <code>c-post</code> (or <code>c-put</code>, <code>c-patch</code>) sends its fields as JSON on submit. With a file input it switches to <code>multipart/form-data</code> automatically.</p>
+  <div c-code="html"><script type="text/plain">
+    <form c-post="/api/newsletter" c-reset c-then="$toast('Subscribed! 🎉', 'success')">
+      <input name="email" type="email" required placeholder="you@mail.com">
+      <small c-error="email"></small>       <!-- field error (client or server) -->
+      <button :disabled="$loading">
+        {{ $loading ? 'Sending…' : 'Subscribe' }}
+      </button>
+      <p c-error></p>                        <!-- general request error -->
+    </form>
+  </script></div>
+  <div class="demo-box">
+    <div class="live-label">Live (mock API: try an invalid email)</div>
+    <form c-post="/api/newsletter" c-reset c-then="$toast('Subscribed! 🎉', 'success')" class="row" style="align-items:flex-start">
+      <div style="flex:1">
+        <input class="mini-input" name="email" placeholder="you@mail.com">
+        <small class="err" c-error="email"></small>
+      </div>
+      <button class="btn btn-primary btn-sm" style="height:42px" :disabled="$loading">{{ $loading ? '…' : 'Subscribe' }}</button>
+    </form>
+  </div>
+
+  <h3><span c-lang="uz">Formada mavjud o'zgaruvchilar</span><span c-lang="ru">Переменные внутри формы</span><span c-lang="en">Variables inside the form</span></h3>
+  <table>
+    <tr><td><code>$loading</code></td><td><span c-lang="uz">So'rov ketyapti</span><span c-lang="ru">Запрос выполняется</span><span c-lang="en">Request in flight</span></td></tr>
+    <tr><td><code>$errors</code></td><td><span c-lang="uz">Maydon xatolari obyekti: <code>{ email: '…' }</code></span><span c-lang="ru">Объект ошибок полей: <code>{ email: '…' }</code></span><span c-lang="en">Field errors object: <code>{ email: '…' }</code></span></td></tr>
+    <tr><td><code>$error</code></td><td><code>{ message, status, data }</code></td></tr>
+    <tr><td><code>$response</code> · <code>$status</code></td><td><span c-lang="uz">Oxirgi javob</span><span c-lang="ru">Последний ответ</span><span c-lang="en">Last response</span></td></tr>
+  </table>
+
+  <h2 id="validation"><span c-lang="uz">Validatsiya</span><span c-lang="ru">Валидация</span><span c-lang="en">Validation</span></h2>
+  <p c-lang="uz">1) Brauzerning standart atributlari ishlaydi: <code>required</code>, <code>type="email"</code>, <code>minlength</code>, <code>pattern</code>… 2) <code>c-validate</code> — o'z qoidangiz: <code>true</code> yoki xato matnini qaytaring. 3) Server <b>422</b> va <code>{ errors: { field: 'xabar' } }</code> qaytarsa — xatolar avtomatik maydonlar yonida chiqadi.</p>
+  <p c-lang="ru">1) Работают стандартные атрибуты: <code>required</code>, <code>type="email"</code>, <code>minlength</code>, <code>pattern</code>… 2) <code>c-validate</code> — своё правило: верните <code>true</code> или текст ошибки. 3) Если сервер вернёт <b>422</b> и <code>{ errors: { field: 'сообщение' } }</code> — ошибки сами появятся возле полей.</p>
+  <p c-lang="en">1) Native attributes just work: <code>required</code>, <code>type="email"</code>, <code>minlength</code>, <code>pattern</code>… 2) <code>c-validate</code> is your own rule: return <code>true</code> or an error message. 3) If the server responds <b>422</b> with <code>{ errors: { field: 'message' } }</code>, the errors appear next to the fields automatically.</p>
+  <div c-code="html"><script type="text/plain">
+    <form c-post="/api/signup">
+      <input name="username" required minlength="3">
+      <small c-error="username"></small>
+
+      <input name="password" type="password" c-validate="$value.length >= 8 || 'At least 8 characters'">
+      <small c-error="password"></small>
+
+      <input name="confirm" type="password"
+             c-validate="$value === $form.password.value || 'Passwords do not match'">
+      <small c-error="confirm"></small>
+      <button>Create account</button>
+    </form>
+  </script></div>
+  <p c-lang="uz">Xato bo'lgan maydonlarga <code>aria-invalid="true"</code> va <code>.c-invalid</code> klassi qo'shiladi — CSS yoki Tailwind bilan bezang. Birinchi urinishdan keyin maydonlar yozilayotganda qayta tekshiriladi.</p>
+  <p c-lang="ru">Невалидные поля получают <code>aria-invalid="true"</code> и класс <code>.c-invalid</code> — стилизуйте через CSS или Tailwind. После первой попытки поля проверяются заново при вводе.</p>
+  <p c-lang="en">Invalid fields get <code>aria-invalid="true"</code> and the <code>.c-invalid</code> class — style them with CSS or Tailwind. After the first attempt, fields re-validate as you type.</p>
+
+  <h2 id="optimistic"><span c-lang="uz">Optimistik yangilash</span><span c-lang="ru">Оптимистичные обновления</span><span c-lang="en">Optimistic updates</span></h2>
+  <p c-lang="uz"><code>c-optimistic</code> ifodasi so'rovdan oldin darhol bajariladi. Server xato qaytarsa, holat avtomatik avvalgi qiymatga qaytariladi.</p>
+  <p c-lang="ru">Выражение <code>c-optimistic</code> выполняется сразу, до запроса. Если сервер вернёт ошибку, состояние автоматически откатится.</p>
+  <p c-lang="en">The <code>c-optimistic</code> expression runs immediately, before the request. If the server fails, state is rolled back automatically.</p>
+  <div c-code="html"><script type="text/plain">
+    <button c-post="/api/posts/{{ post.id }}/like"
+            c-optimistic="post.likes++; post.liked = true"
+            c-catch="$toast('Could not like', 'error')">
+      ♥ {{ post.likes }}
+    </button>
+  </script></div>
+</div>

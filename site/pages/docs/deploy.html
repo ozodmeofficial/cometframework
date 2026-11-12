@@ -1,0 +1,65 @@
+<title>Deployment</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Deploy</span><span c-lang="ru">Деплой</span><span c-lang="en">Deployment</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Comet sayti — oddiy statik fayllar. Istalgan hostingga yuklang. Faqat bitta sozlama kerak: noma'lum manzillar <code>index.html</code>'ni qaytarishi.</span>
+    <span c-lang="ru">Сайт на Comet — обычные статические файлы. Загружайте на любой хостинг. Нужна одна настройка: неизвестные адреса должны отдавать <code>index.html</code>.</span>
+    <span c-lang="en">A Comet site is just static files. Upload them anywhere. You need one setting: unknown paths must serve <code>index.html</code>.</span>
+  </p>
+  <p c-lang="uz">Nega? Foydalanuvchi <code>/docs/routing</code>'ni to'g'ridan-to'g'ri ochsa, server bunday faylni topmaydi. U <code>index.html</code>'ni qaytarsa, Comet router kerakli sahifani o'zi yuklaydi.</p>
+  <p c-lang="ru">Почему? Если пользователь откроет <code>/docs/routing</code> напрямую, сервер не найдёт такой файл. Если он вернёт <code>index.html</code>, роутер Comet сам загрузит нужную страницу.</p>
+  <p c-lang="en">Why? When someone opens <code>/docs/routing</code> directly, the server has no such file. If it returns <code>index.html</code> instead, the Comet router loads the right page itself.</p>
+
+  <h2 id="netlify">Netlify</h2>
+  <div c-code="text" data-file="_redirects"><script type="text/plain">
+    /*  /index.html  200
+  </script></div>
+
+  <h2 id="vercel">Vercel</h2>
+  <div c-code="js" data-file="vercel.json"><script type="text/plain">
+    { "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }] }
+  </script></div>
+  <p c-lang="uz">Rewrite'lar faqat mavjud bo'lmagan fayllarga qo'llanadi, shuning uchun <code>pages/*.html</code> odatdagidek yuklanadi.</p>
+  <p c-lang="ru">Rewrite применяется только к несуществующим файлам, поэтому <code>pages/*.html</code> отдаются как обычно.</p>
+  <p c-lang="en">Rewrites only apply when no file matches, so <code>pages/*.html</code> are still served normally.</p>
+
+  <h2 id="github-pages">GitHub Pages</h2>
+  <p c-lang="uz">GitHub Pages noma'lum manzilda <code>404.html</code>'ni ko'rsatadi. Shunchaki <code>index.html</code>'ni <code>404.html</code> nomi bilan nusxalang. Sayt <code>username.github.io/repo/</code> ichida bo'lsa, <code>&lt;base href="/repo/"&gt;</code> qo'shing va havolalarni nisbiy yozing (<code>href="docs"</code>, <code>/docs</code> emas). Ushbu sayt GitHub Pages'da aynan shunday ishlaydi.</p>
+  <p c-lang="ru">GitHub Pages на неизвестный адрес отдаёт <code>404.html</code>. Просто скопируйте <code>index.html</code> в <code>404.html</code>. Если сайт лежит в <code>username.github.io/repo/</code>, добавьте <code>&lt;base href="/repo/"&gt;</code> и пишите относительные ссылки (<code>href="docs"</code>, а не <code>/docs</code>). Этот сайт так и работает на GitHub Pages.</p>
+  <p c-lang="en">GitHub Pages serves <code>404.html</code> for unknown paths. Just copy <code>index.html</code> to <code>404.html</code>. If the site lives at <code>username.github.io/repo/</code>, add <code>&lt;base href="/repo/"&gt;</code> and use relative links (<code>href="docs"</code>, not <code>/docs</code>). This very site runs on GitHub Pages that way.</p>
+  <div c-code="bash"><script type="text/plain">
+    cp index.html 404.html
+  </script></div>
+
+  <h2 id="nginx">Nginx</h2>
+  <div c-code="text" data-file="nginx.conf"><script type="text/plain">
+    location / {
+      try_files $uri $uri/ /index.html;
+    }
+  </script></div>
+
+  <h2 id="apache">Apache</h2>
+  <div c-code="text" data-file=".htaccess"><script type="text/plain">
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.html [L]
+  </script></div>
+
+  <h2 id="backends"><span c-lang="uz">Mavjud backend bilan</span><span c-lang="ru">С существующим бэкендом</span><span c-lang="en">With an existing backend</span></h2>
+  <p c-lang="uz">Laravel, Django, Rails, Express — fayllarni <code>public/</code> papkaga qo'ying va "catch-all" marshrut <code>index.html</code>'ni qaytarsin. API manzillaringiz (<code>/api/…</code>) avvalgidek ishlayveradi.</p>
+  <p c-lang="ru">Laravel, Django, Rails, Express — положите файлы в <code>public/</code> и сделайте catch-all маршрут, отдающий <code>index.html</code>. Ваши API (<code>/api/…</code>) продолжают работать.</p>
+  <p c-lang="en">Laravel, Django, Rails, Express — put the files in <code>public/</code> and add a catch-all route that returns <code>index.html</code>. Your API routes (<code>/api/…</code>) keep working.</p>
+  <div c-code="js" data-file="server.js (Express)"><script type="text/plain">
+    app.use(express.static('public'));
+    app.get('*', (req, res) => res.sendFile(path.resolve('public/index.html')));
+  </script></div>
+
+  <h2 id="checklist"><span c-lang="uz">Production tekshiruv ro'yxati</span><span c-lang="ru">Чеклист для продакшена</span><span c-lang="en">Production checklist</span></h2>
+  <ul>
+    <li c-lang="uz">CDN versiyasini qotiring: <code>@v0.1.0</code>.</li><li c-lang="ru">Зафиксируйте версию CDN: <code>@v0.1.0</code>.</li><li c-lang="en">Pin the CDN version: <code>@v0.1.0</code>.</li>
+    <li c-lang="uz">Mock'larni faqat development'da yoqing.</li><li c-lang="ru">Включайте моки только в разработке.</li><li c-lang="en">Enable mocks only in development.</li>
+    <li c-lang="uz">SEO muhim sahifalarning asosiy matnini <code>index.html</code>'da statik yozing.</li><li c-lang="ru">Важный для SEO текст пишите статически в <code>index.html</code>.</li><li c-lang="en">Write SEO-critical content statically in <code>index.html</code>.</li>
+    <li c-lang="uz">CSP ishlatsangiz: Comet ifodalari <code>'unsafe-eval'</code> talab qiladi (Alpine.js kabi).</li><li c-lang="ru">При CSP: выражения Comet требуют <code>'unsafe-eval'</code> (как Alpine.js).</li><li c-lang="en">If you use CSP: Comet expressions need <code>'unsafe-eval'</code> (like Alpine.js).</li>
+  </ul>
+</div>

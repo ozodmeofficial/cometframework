@@ -1,0 +1,50 @@
+<title>Comparison & performance</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Taqqoslash va tezlik</span><span c-lang="ru">Сравнение и скорость</span><span c-lang="en">Comparison &amp; performance</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Halol tahlil: Comet qayerda kuchli, qayerda boshqasini tanlash kerak.</span>
+    <span c-lang="ru">Честный разбор: где Comet силён, а где лучше выбрать другое.</span>
+    <span c-lang="en">An honest breakdown: where Comet shines and where to pick something else.</span>
+  </p>
+
+  <h2 id="speed"><span c-lang="uz">Tezlik haqida haqiqat</span><span c-lang="ru">Правда о скорости</span><span c-lang="en">The truth about speed</span></h2>
+  <p c-lang="uz">"X freymworkdan 20 barobar tez" degan da'volarga ishonmang. Barcha freymworklar oxir-oqibat bir xil brauzer DOM API'sini chaqiradi va bu chegarani hech kim yengib o'tolmaydi. Svelte, Solid va vanilla JS deyarli bir xil tezlikda; React virtual DOM tufayli ko'p operatsiyalarda ulardan sekinroq, lekin bir necha barobar emas.</p>
+  <p c-lang="ru">Не верьте заявлениям «в 20 раз быстрее фреймворка X». Все фреймворки в итоге вызывают один и тот же DOM API браузера, и этот предел никто не обходит. Svelte, Solid и vanilla JS почти равны; React из-за virtual DOM медленнее во многих операциях, но не в разы.</p>
+  <p c-lang="en">Don't trust "20× faster than framework X" claims. Every framework ends up calling the same browser DOM APIs, and nobody gets past that ceiling. Svelte, Solid and vanilla JS are close to equal; React is slower in many operations because of its virtual DOM — but not by multiples.</p>
+  <p c-lang="uz">Comet virtual DOM ishlatmaydi: har bir <code c-pre>{{ }}</code> yoki direktiva o'z effektiga ega va faqat o'zi o'qigan qiymat o'zgarganda ishlaydi. <code>c-for</code> kalit bo'yicha DOM tugunlarini qayta ishlatadi. Yangilanishlar mikrotaskda guruhlanadi. Bu Solid/Vue reaktivligiga o'xshash yondashuv.</p>
+  <p c-lang="ru">Comet не использует virtual DOM: у каждого <code c-pre>{{ }}</code> и директивы свой эффект, который перезапускается только при изменении прочитанных им значений. <code>c-for</code> переиспользует узлы по ключу. Обновления группируются в микрозадаче. Подход похож на реактивность Solid/Vue.</p>
+  <p c-lang="en">Comet has no virtual DOM: each <code c-pre>{{ }}</code> and directive owns an effect that only re-runs when the values it read change. <code>c-for</code> reuses nodes by key. Updates are batched in a microtask. It's the same family of approach as Solid's and Vue's reactivity.</p>
+  <p c-lang="uz">Comet ifodalarni brauzerda <code>new Function</code> bilan kompilyatsiya qiladi (kesh bilan). Bu build'siz ishlashning narxi: juda katta ro'yxatlarda Comet kompilyatsiya qilinadigan freymworklardan (Svelte, Solid) biroz sekinroq bo'lishi mumkin. <a href="./">Bosh sahifadagi benchmark</a> brauzeringizda Comet'ni qo'lda yozilgan vanilla kod bilan solishtiradi.</p>
+  <p c-lang="ru">Comet компилирует выражения в браузере через <code>new Function</code> (с кэшем). Это цена работы без сборки: на очень больших списках Comet может немного уступать компилируемым фреймворкам (Svelte, Solid). <a href="./">Бенчмарк на главной</a> сравнивает Comet с ручным vanilla-кодом прямо в вашем браузере.</p>
+  <p c-lang="en">Comet compiles expressions in the browser with <code>new Function</code> (cached). That's the price of no build step: on very large lists Comet can be a bit slower than compiled frameworks (Svelte, Solid). The <a href="./">benchmark on the home page</a> compares Comet with hand-written vanilla code right in your browser.</p>
+
+  <h2 id="where-comet-wins"><span c-lang="uz">Comet haqiqatan yutadigan joylar</span><span c-lang="ru">Где Comet действительно выигрывает</span><span c-lang="en">Where Comet really wins</span></h2>
+  <table>
+    <tr><th></th><th>Comet</th><th><span c-lang="uz">Odatiy stek</span><span c-lang="ru">Типичный стек</span><span c-lang="en">Typical stack</span></th></tr>
+    <tr><td><span c-lang="uz">Birinchi sahifagacha vaqt</span><span c-lang="ru">Время до первой страницы</span><span c-lang="en">Time to first page</span></td><td><span c-lang="uz">soniyalar</span><span c-lang="ru">секунды</span><span c-lang="en">seconds</span></td><td><span c-lang="uz">o'rnatish + konfiguratsiya: daqiqalar</span><span c-lang="ru">установка + конфиги: минуты</span><span c-lang="en">install + config: minutes</span></td></tr>
+    <tr><td>node_modules</td><td>0</td><td><span c-lang="uz">yuzlab paketlar</span><span c-lang="ru">сотни пакетов</span><span c-lang="en">hundreds of packages</span></td></tr>
+    <tr><td><span c-lang="uz">O'zgarishni ko'rish</span><span c-lang="ru">Увидеть изменение</span><span c-lang="en">See a change</span></td><td><span c-lang="uz">saqlash + yangilash</span><span c-lang="ru">сохранить + обновить</span><span c-lang="en">save + refresh</span></td><td><span c-lang="uz">dev server, HMR</span><span c-lang="ru">dev-сервер, HMR</span><span c-lang="en">dev server, HMR</span></td></tr>
+    <tr><td><span c-lang="uz">Router, HTTP, forma, i18n, store</span><span c-lang="ru">Роутер, HTTP, формы, i18n, store</span><span c-lang="en">Router, HTTP, forms, i18n, stores</span></td><td><span c-lang="uz">ichida</span><span c-lang="ru">внутри</span><span c-lang="en">built in</span></td><td><span c-lang="uz">5–10 alohida paket</span><span c-lang="ru">5–10 отдельных пакетов</span><span c-lang="en">5–10 separate packages</span></td></tr>
+    <tr><td><span c-lang="uz">Backend'siz prototip</span><span c-lang="ru">Прототип без бэкенда</span><span c-lang="en">Prototype without a backend</span></td><td><code>mock.crud()</code> + <code>$db</code></td><td>json-server, MSW…</td></tr>
+  </table>
+
+  <h2 id="choose"><span c-lang="uz">Qachon nimani tanlash</span><span c-lang="ru">Что когда выбирать</span><span c-lang="en">What to choose when</span></h2>
+  <table>
+    <tr><th><span c-lang="uz">Vazifa</span><span c-lang="ru">Задача</span><span c-lang="en">Task</span></th><th><span c-lang="uz">Tavsiya</span><span c-lang="ru">Рекомендация</span><span c-lang="en">Recommendation</span></th></tr>
+    <tr><td><span c-lang="uz">Landing, portfolio, kichik biznes sayti</span><span c-lang="ru">Лендинг, портфолио, сайт малого бизнеса</span><span c-lang="en">Landing page, portfolio, small business site</span></td><td><b>Comet</b></td></tr>
+    <tr><td><span c-lang="uz">Admin panel, CRM, ichki tizim</span><span c-lang="ru">Админка, CRM, внутренняя система</span><span c-lang="en">Admin panel, CRM, internal tool</span></td><td><b>Comet</b></td></tr>
+    <tr><td><span c-lang="uz">MVP / hackathon / prototip</span><span c-lang="ru">MVP / хакатон / прототип</span><span c-lang="en">MVP / hackathon / prototype</span></td><td><b>Comet</b></td></tr>
+    <tr><td><span c-lang="uz">Server-rendered sayt (Laravel, Django) ustiga interaktivlik</span><span c-lang="ru">Интерактивность поверх серверного сайта (Laravel, Django)</span><span c-lang="en">Interactivity on top of a server-rendered site (Laravel, Django)</span></td><td><b>Comet</b>, Alpine, htmx</td></tr>
+    <tr><td><span c-lang="uz">SEO juda muhim bo'lgan kontent sayti, blog, e-commerce</span><span c-lang="ru">Контентный сайт, блог, e-commerce с критичным SEO</span><span c-lang="en">SEO-critical content site, blog, e-commerce</span></td><td>Astro, Next.js, Nuxt <span c-lang="uz">(hozircha)</span><span c-lang="ru">(пока)</span><span c-lang="en">(for now)</span></td></tr>
+    <tr><td><span c-lang="uz">Yuzlab dasturchili ulkan ilova</span><span c-lang="ru">Огромное приложение с сотнями разработчиков</span><span c-lang="en">Huge app with hundreds of developers</span></td><td>React / Angular <span c-lang="uz">(ekotizim va TypeScript)</span><span c-lang="ru">(экосистема и TypeScript)</span><span c-lang="en">(ecosystem &amp; TypeScript)</span></td></tr>
+  </table>
+
+  <h2 id="size"><span c-lang="uz">Hajm</span><span c-lang="ru">Размер</span><span c-lang="en">Size</span></h2>
+  <p c-get="assets/size.json" c-as="size" c-cache="1m">
+    <span c-lang="uz">Joriy build:</span><span c-lang="ru">Текущая сборка:</span><span c-lang="en">Current build:</span>
+    <b>{{ size ? (size.raw / 1024).toFixed(1) + ' KB min · ' + (size.gzip / 1024).toFixed(1) + ' KB gzip · ' + (size.brotli / 1024).toFixed(1) + ' KB brotli' : '…' }}</b>.
+    <span c-lang="uz">Bunga router, HTTP qatlami, ORM, mock API, i18n, animatsiyalar va devtools kiradi.</span>
+    <span c-lang="ru">Сюда входят роутер, HTTP-слой, ORM, mock API, i18n, анимации и devtools.</span>
+    <span c-lang="en">That includes the router, HTTP layer, ORM, mock API, i18n, animations and devtools.</span>
+  </p>
+</div>

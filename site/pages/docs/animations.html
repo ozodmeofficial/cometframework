@@ -1,0 +1,67 @@
+<title>Animations</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Animatsiyalar</span><span c-lang="ru">Анимации</span><span c-lang="en">Animations</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Kirish/chiqish animatsiyalari, scroll reveal va sahifa o'tishlari. <code>prefers-reduced-motion</code> hurmat qilinadi.</span>
+    <span c-lang="ru">Анимации входа/выхода, появление при прокрутке и переходы страниц. <code>prefers-reduced-motion</code> учитывается.</span>
+    <span c-lang="en">Enter/leave transitions, scroll reveal and page transitions. <code>prefers-reduced-motion</code> is respected.</span>
+  </p>
+
+  <h2 id="transition">c-transition</h2>
+  <p c-lang="uz"><code>c-show</code> yoki <code>c-if</code> bilan birga ishlaydi. Tayyor presetlar: <code>fade</code>, <code>slide-up</code>, <code>slide-down</code>, <code>scale</code>, <code>blur</code>.</p>
+  <p c-lang="ru">Работает вместе с <code>c-show</code> или <code>c-if</code>. Готовые пресеты: <code>fade</code>, <code>slide-up</code>, <code>slide-down</code>, <code>scale</code>, <code>blur</code>.</p>
+  <p c-lang="en">Works with <code>c-show</code> or <code>c-if</code>. Built-in presets: <code>fade</code>, <code>slide-up</code>, <code>slide-down</code>, <code>scale</code>, <code>blur</code>.</p>
+  <div class="demo-box" c-data="{ show: true, kind: 'scale' }">
+    <div class="live-label">Live</div>
+    <div class="seg"><button c-for="k in ['fade','slide-up','slide-down','scale','blur']" :class="{ on: kind === k }" @click="kind = k; show = false; setTimeout(() => show = true, 300)">{{ k }}</button></div>
+    <div style="height:90px;margin-top:14px">
+      <template c-for="k in [kind]" c-key="k">
+        <div :c-transition="k" c-show="show" class="callout" style="margin:0"><b>✨</b><p>c-transition="{{ k }}"</p></div>
+      </template>
+    </div>
+  </div>
+  <div c-code="html"><script type="text/plain">
+    <div c-show="open" c-transition="slide-down">…</div>
+    <p c-if="error" c-transition="fade">{{ error }}</p>
+
+    <!-- your own classes: name-enter-from / -enter-active / -enter-to, name-leave-… -->
+    <div c-show="open" c-transition="pop">…</div>
+    <style>
+      .pop-enter-active, .pop-leave-active { transition: all .3s cubic-bezier(.2,.8,.2,1.4); }
+      .pop-enter-from, .pop-leave-to { opacity: 0; transform: scale(.6); }
+    </style>
+  </script></div>
+
+  <h2 id="reveal">c-reveal · c-stagger</h2>
+  <p c-lang="uz">Element ekranga kirganda paydo bo'ladi. Yo'nalishlar: <code>up</code> (standart), <code>down</code>, <code>left</code>, <code>right</code>, <code>fade</code>, <code>zoom</code>, <code>blur</code>. Ikkinchi qiymat — kechikish (ms). <code>c-stagger</code> bolalarni ketma-ket ko'rsatadi. Bu landing sahifadagi barcha animatsiyalar aynan shular.</p>
+  <p c-lang="ru">Элемент появляется при прокрутке. Направления: <code>up</code> (по умолчанию), <code>down</code>, <code>left</code>, <code>right</code>, <code>fade</code>, <code>zoom</code>, <code>blur</code>. Второе значение — задержка (мс). <code>c-stagger</code> показывает дочерние элементы по очереди. Все анимации на главной — это они.</p>
+  <p c-lang="en">Elements animate in as they enter the viewport. Directions: <code>up</code> (default), <code>down</code>, <code>left</code>, <code>right</code>, <code>fade</code>, <code>zoom</code>, <code>blur</code>. A second value is a delay (ms). <code>c-stagger</code> reveals children one after another. Every animation on the landing page is exactly this.</p>
+  <div c-code="html"><script type="text/plain">
+    <h2 c-reveal>Slides up</h2>
+    <p c-reveal="left 200">From the right, after 200ms</p>
+    <img c-reveal="zoom" src="hero.png">
+    <div c-reveal.repeat="blur">Animates every time it enters</div>
+
+    <ul c-stagger="80">   <!-- 80ms between children -->
+      <li>One</li><li>Two</li><li>Three</li>
+    </ul>
+  </script></div>
+  <div class="demo-box">
+    <div class="live-label">Live</div>
+    <div class="row" c-stagger.repeat="120" style="gap:10px;flex-wrap:wrap">
+      <span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JS</span><span class="chip">Comet</span><span class="chip">☄</span>
+    </div>
+  </div>
+
+  <h2 id="pages"><span c-lang="uz">Sahifa o'tishlari</span><span c-lang="ru">Переходы страниц</span><span c-lang="en">Page transitions</span></h2>
+  <p c-lang="uz">Router <b>View Transitions API</b>'dan avtomatik foydalanadi. Elementlarga <code>view-transition-name</code> bersangiz, ular sahifalar orasida "uchib" o'tadi:</p>
+  <p c-lang="ru">Роутер автоматически использует <b>View Transitions API</b>. Задайте элементам <code>view-transition-name</code> — и они будут «перелетать» между страницами:</p>
+  <p c-lang="en">The router uses the <b>View Transitions API</b> automatically. Give elements a <code>view-transition-name</code> and they morph between pages:</p>
+  <div c-code="html"><script type="text/plain">
+    <!-- pages/products.html -->
+    <img :src="p.image" :style="{ viewTransitionName: 'product-' + p.id }">
+
+    <!-- pages/product.html -->
+    <img :src="product.image" :style="{ viewTransitionName: 'product-' + product.id }">
+  </script></div>
+</div>

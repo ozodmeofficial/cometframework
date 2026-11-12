@@ -1,0 +1,78 @@
+<title>All directives</title>
+<div c-layout="docs">
+  <h1><span c-lang="uz">Barcha direktivalar</span><span c-lang="ru">Все директивы</span><span c-lang="en">All directives</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Bitta sahifadagi to'liq ro'yxat. Har bir qatordagi havola batafsil bo'limga olib boradi.</span>
+    <span c-lang="ru">Полный список на одной странице. Ссылки ведут к подробным разделам.</span>
+    <span c-lang="en">The complete list on one page. Links lead to the detailed sections.</span>
+  </p>
+
+  <h2 id="state"><span c-lang="uz">Holat va shablon</span><span c-lang="ru">Состояние и шаблон</span><span c-lang="en">State &amp; templating</span></h2>
+  <table>
+    <tr><td><code>c-data="{…}"</code></td><td><span c-lang="uz">Reaktiv qamrov</span><span c-lang="ru">Реактивная область</span><span c-lang="en">Reactive scope</span></td><td><a href="docs/state">→</a></td></tr>
+    <tr><td><code c-pre>{{ expr }}</code></td><td><span c-lang="uz">Matn va atributlarda interpolatsiya</span><span c-lang="ru">Интерполяция в тексте и атрибутах</span><span c-lang="en">Interpolation in text and attributes</span></td><td><a href="docs/templating">→</a></td></tr>
+    <tr><td><code>c-text</code> · <code>c-html</code></td><td><span c-lang="uz">Matn / HTML</span><span c-lang="ru">Текст / HTML</span><span c-lang="en">Text / HTML content</span></td><td><a href="docs/templating">→</a></td></tr>
+    <tr><td><code>c-if</code> · <code>c-else-if</code> · <code>c-else</code></td><td><span c-lang="uz">Shartli render</span><span c-lang="ru">Условный рендер</span><span c-lang="en">Conditional rendering</span></td><td><a href="docs/templating#conditionals">→</a></td></tr>
+    <tr><td><code>c-show</code></td><td><span c-lang="uz">display bilan yashirish</span><span c-lang="ru">Скрытие через display</span><span c-lang="en">Toggle via display</span></td><td><a href="docs/templating#conditionals">→</a></td></tr>
+    <tr><td><code>c-for</code> · <code>c-key</code></td><td><span c-lang="uz">Ro'yxatlar</span><span c-lang="ru">Списки</span><span c-lang="en">Lists</span></td><td><a href="docs/templating#lists">→</a></td></tr>
+    <tr><td><code>:attr</code> · <code>c-bind</code></td><td><span c-lang="uz">Atribut, class, style</span><span c-lang="ru">Атрибуты, class, style</span><span c-lang="en">Attributes, class, style</span></td><td><a href="docs/templating#bind">→</a></td></tr>
+    <tr><td><code>c-model</code></td><td><span c-lang="uz">Ikki tomonlama bog'lash</span><span c-lang="ru">Двусторонняя привязка</span><span c-lang="en">Two-way binding</span></td><td><a href="docs/forms">→</a></td></tr>
+    <tr><td><code>c-persist</code></td><td>localStorage</td><td><a href="docs/state#persist">→</a></td></tr>
+    <tr><td><code>c-ref</code></td><td><code>$refs</code></td><td><a href="docs/utilities#refs">→</a></td></tr>
+    <tr><td><code>c-init</code> · <code>c-effect</code></td><td><span c-lang="uz">Mount / reaktiv effekt</span><span c-lang="ru">Mount / реактивный эффект</span><span c-lang="en">Mount hook / reactive effect</span></td><td><a href="docs/utilities#focus">→</a></td></tr>
+    <tr><td><code>c-cloak</code> · <code>c-pre</code> · <code>c-ignore</code></td><td><span c-lang="uz">Ishlov berishni boshqarish</span><span c-lang="ru">Управление обработкой</span><span c-lang="en">Processing control</span></td><td><a href="docs/templating#cloak">→</a></td></tr>
+  </table>
+
+  <h2 id="events"><span c-lang="uz">Hodisalar</span><span c-lang="ru">События</span><span c-lang="en">Events</span></h2>
+  <table>
+    <tr><td><code>@event</code> · <code>c-on:event</code></td><td><span c-lang="uz">Modifikatorlar bilan</span><span c-lang="ru">С модификаторами</span><span c-lang="en">With modifiers</span></td><td><a href="docs/events">→</a></td></tr>
+    <tr><td><code>c-hotkey</code></td><td><span c-lang="uz">Klaviatura yorliqlari</span><span c-lang="ru">Горячие клавиши</span><span c-lang="en">Keyboard shortcuts</span></td><td><a href="docs/events#hotkeys">→</a></td></tr>
+    <tr><td><code>c-intersect</code></td><td><span c-lang="uz">Ko'rinishga kirish/chiqish</span><span c-lang="ru">Вход/выход из области видимости</span><span c-lang="en">Enter/leave the viewport</span></td><td><a href="docs/utilities#intersect">→</a></td></tr>
+    <tr><td><code>c-copy</code></td><td>Clipboard</td><td><a href="docs/utilities#copy">→</a></td></tr>
+  </table>
+
+  <h2 id="data"><span c-lang="uz">Ma'lumot va server</span><span c-lang="ru">Данные и сервер</span><span c-lang="en">Data &amp; server</span></h2>
+  <table>
+    <tr><td><code>c-get</code> · <code>c-post</code> · <code>c-put</code> · <code>c-patch</code> · <code>c-delete</code></td><td>HTTP</td><td><a href="docs/http">→</a></td></tr>
+    <tr><td><code>c-as</code> · <code>c-trigger</code> · <code>c-debounce</code> · <code>c-poll</code> · <code>c-cache</code></td><td><span c-lang="uz">So'rov sozlamalari</span><span c-lang="ru">Опции запроса</span><span c-lang="en">Request options</span></td><td><a href="docs/http#triggers">→</a></td></tr>
+    <tr><td><code>c-body</code> · <code>c-headers</code> · <code>c-select</code> · <code>c-confirm</code></td><td><span c-lang="uz">So'rov tarkibi</span><span c-lang="ru">Содержимое запроса</span><span c-lang="en">Request content</span></td><td><a href="docs/http#mutations">→</a></td></tr>
+    <tr><td><code>c-then</code> · <code>c-catch</code> · <code>c-redirect</code> · <code>c-reset</code></td><td><span c-lang="uz">Natija</span><span c-lang="ru">Результат</span><span c-lang="en">Outcome</span></td><td><a href="docs/http#mutations">→</a></td></tr>
+    <tr><td><code>c-target</code> · <code>c-swap</code></td><td><span c-lang="uz">HTML almashtirish</span><span c-lang="ru">Замена HTML</span><span c-lang="en">HTML swaps</span></td><td><a href="docs/http#html-swaps">→</a></td></tr>
+    <tr><td><code>c-optimistic</code></td><td><span c-lang="uz">Optimistik UI</span><span c-lang="ru">Оптимистичный UI</span><span c-lang="en">Optimistic UI</span></td><td><a href="docs/forms#optimistic">→</a></td></tr>
+    <tr><td><code>c-loading</code> · <code>c-loaded</code> · <code>c-error</code> · <code>c-empty</code></td><td><span c-lang="uz">Holat bloklari</span><span c-lang="ru">Блоки состояний</span><span c-lang="en">State blocks</span></td><td><a href="docs/http">→</a></td></tr>
+    <tr><td><code>c-validate</code></td><td><span c-lang="uz">Maydon qoidasi</span><span c-lang="ru">Правило поля</span><span c-lang="en">Field rule</span></td><td><a href="docs/forms#validation">→</a></td></tr>
+    <tr><td><code>c-live</code> · <code>c-message</code> · <code>c-max</code></td><td><span c-lang="uz">Real vaqt</span><span c-lang="ru">Реальное время</span><span c-lang="en">Realtime</span></td><td><a href="docs/realtime">→</a></td></tr>
+  </table>
+
+  <h2 id="app"><span c-lang="uz">Ilova</span><span c-lang="ru">Приложение</span><span c-lang="en">App structure</span></h2>
+  <table>
+    <tr><td><code>c-view</code> · <code>c-layout</code> · <code>c-outlet</code></td><td><span c-lang="uz">Router va layoutlar</span><span c-lang="ru">Роутер и лейауты</span><span c-lang="en">Router &amp; layouts</span></td><td><a href="docs/routing">→</a></td></tr>
+    <tr><td><code>c-active</code></td><td><span c-lang="uz">Faol havola</span><span c-lang="ru">Активная ссылка</span><span c-lang="en">Active link</span></td><td><a href="docs/routing#links">→</a></td></tr>
+    <tr><td><code>c-reload</code></td><td><span c-lang="uz">SPA'siz oddiy havola</span><span c-lang="ru">Обычная ссылка без SPA</span><span c-lang="en">Plain link, no SPA</span></td><td><a href="docs/routing#links">→</a></td></tr>
+    <tr><td><code>c-component</code> · <code>c-props</code></td><td><span c-lang="uz">Komponentlar</span><span c-lang="ru">Компоненты</span><span c-lang="en">Components</span></td><td><a href="docs/components">→</a></td></tr>
+    <tr><td><code>c-include</code> · <code>&lt;c-include&gt;</code></td><td><span c-lang="uz">HTML qismlar</span><span c-lang="ru">HTML-фрагменты</span><span c-lang="en">HTML partials</span></td><td><a href="docs/components#include">→</a></td></tr>
+    <tr><td><code>c-app</code></td><td><span c-lang="uz">Faqat shu qismni boshqarish (standart — butun body)</span><span c-lang="ru">Управлять только этой частью (по умолчанию — весь body)</span><span c-lang="en">Only manage this subtree (default: the whole body)</span></td><td></td></tr>
+  </table>
+
+  <h2 id="ui">UI</h2>
+  <table>
+    <tr><td><code>c-t</code> · <code>c-lang</code></td><td>i18n</td><td><a href="docs/i18n">→</a></td></tr>
+    <tr><td><code>c-transition</code></td><td><span c-lang="uz">Kirish/chiqish</span><span c-lang="ru">Вход/выход</span><span c-lang="en">Enter/leave</span></td><td><a href="docs/animations">→</a></td></tr>
+    <tr><td><code>c-reveal</code> · <code>c-stagger</code></td><td><span c-lang="uz">Scroll animatsiyalari</span><span c-lang="ru">Анимации при скролле</span><span c-lang="en">Scroll animations</span></td><td><a href="docs/animations#reveal">→</a></td></tr>
+    <tr><td><code>c-teleport</code> · <code>c-lazy</code> · <code>c-focus</code></td><td><span c-lang="uz">Yordamchilar</span><span c-lang="ru">Утилиты</span><span c-lang="en">Utilities</span></td><td><a href="docs/utilities">→</a></td></tr>
+  </table>
+
+  <h2 id="custom"><span c-lang="uz">O'z direktivangiz</span><span c-lang="ru">Своя директива</span><span c-lang="en">Your own directive</span></h2>
+  <div c-code="js"><script type="text/plain">
+    // <span c-tooltip="'Hello ' + name">hover me</span>
+    Comet.directive('tooltip', ({ el, evaluate, effect, cleanup, mods, arg }) => {
+      effect(() => el.setAttribute('title', evaluate()));   // reactive
+      const onEnter = () => console.log('shown');
+      el.addEventListener('mouseenter', onEnter);
+      cleanup(() => el.removeEventListener('mouseenter', onEnter));
+    });
+  </script></div>
+  <p c-lang="uz">Bu saytdagi kod bloklari (<code>c-code</code>) va kartalardagi yorug'lik effekti (<code>c-spotlight</code>) ham shunday yozilgan.</p>
+  <p c-lang="ru">Блоки кода на этом сайте (<code>c-code</code>) и подсветка карточек (<code>c-spotlight</code>) написаны именно так.</p>
+  <p c-lang="en">This site's code blocks (<code>c-code</code>) and card glow (<code>c-spotlight</code>) are written exactly like that.</p>
+</div>

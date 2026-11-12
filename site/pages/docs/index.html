@@ -1,0 +1,66 @@
+<title>Introduction</title>
+<div c-layout="docs">
+  <span class="badge">v0.1</span>
+  <h1><span c-lang="uz">Comet nima?</span><span c-lang="ru">Что такое Comet?</span><span c-lang="en">What is Comet?</span></h1>
+  <p class="lead-p">
+    <span c-lang="uz">Comet — build talab qilmaydigan web freymwork. U bitta <code>&lt;script&gt;</code> tegi orqali ulanadi va oddiy HTML'ni reaktiv, ko'p sahifali SPA ilovaga aylantiradi.</span>
+    <span c-lang="ru">Comet — веб-фреймворк, которому не нужна сборка. Он подключается одним тегом <code>&lt;script&gt;</code> и превращает обычный HTML в реактивное многостраничное SPA.</span>
+    <span c-lang="en">Comet is a web framework that needs no build step. It is added with a single <code>&lt;script&gt;</code> tag and turns plain HTML into a reactive, multi-page SPA.</span>
+  </p>
+
+  <div c-code="html" data-file="index.html"><script type="text/plain">
+    <!doctype html>
+    <html>
+    <head>
+      <script src="https://cdn.jsdelivr.net/gh/ozodmeofficial/cometframework@main/dist/comet.min.js"><\/script>
+    </head>
+    <body>
+      <div c-data="{ count: 0 }">
+        <button @click="count++">Clicked {{ count }} times</button>
+      </div>
+    </body>
+    </html>
+  </script></div>
+
+  <h2 id="why"><span c-lang="uz">Nega Comet?</span><span c-lang="ru">Зачем Comet?</span><span c-lang="en">Why Comet?</span></h2>
+  <p c-lang="uz">Zamonaviy frontend ko'pincha "Hello world" uchun ham yuzlab paket, bundler, konfiguratsiya va build bosqichini talab qiladi. Comet boshqacha yo'l tutadi: brauzer allaqachon juda kuchli, shuning uchun freymworkning vazifasi — HTML'ga yetishmayotgan narsalarni qo'shish, xolos.</p>
+  <p c-lang="ru">Современный фронтенд часто требует сотни пакетов, бандлер, конфиги и шаг сборки даже для «Hello world». Comet идёт другим путём: браузер уже очень мощный, и задача фреймворка — лишь добавить то, чего не хватает HTML.</p>
+  <p c-lang="en">Modern frontend often needs hundreds of packages, a bundler, config files and a build step — even for "Hello world". Comet takes another path: the browser is already powerful, so the framework's job is only to add what HTML is missing.</p>
+  <ul>
+    <li c-lang="uz"><b>Reaktivlik</b> — <code>c-data</code>, <code c-pre>{{ }}</code>, <code>c-if</code>, <code>c-for</code>, <code>c-model</code>.</li>
+    <li c-lang="ru"><b>Реактивность</b> — <code>c-data</code>, <code c-pre>{{ }}</code>, <code>c-if</code>, <code>c-for</code>, <code>c-model</code>.</li>
+    <li c-lang="en"><b>Reactivity</b> — <code>c-data</code>, <code c-pre>{{ }}</code>, <code>c-if</code>, <code>c-for</code>, <code>c-model</code>.</li>
+    <li c-lang="uz"><b>Avto SPA router</b> — <code>pages/about.html</code> fayli <code>/about</code> manziliga aylanadi.</li>
+    <li c-lang="ru"><b>Авто-SPA роутер</b> — файл <code>pages/about.html</code> становится адресом <code>/about</code>.</li>
+    <li c-lang="en"><b>Automatic SPA router</b> — <code>pages/about.html</code> becomes <code>/about</code>.</li>
+    <li c-lang="uz"><b>HTML ichida HTTP</b> — <code>c-get</code>, <code>c-post</code> loading/error holatlari bilan.</li>
+    <li c-lang="ru"><b>HTTP в HTML</b> — <code>c-get</code>, <code>c-post</code> с состояниями loading/error.</li>
+    <li c-lang="en"><b>HTTP in HTML</b> — <code>c-get</code>, <code>c-post</code> with loading/error states.</li>
+    <li c-lang="uz"><b>Lokal ORM va mock backend</b> — server tayyor bo'lmasdan ham to'liq ilova.</li>
+    <li c-lang="ru"><b>Локальная ORM и mock-бэкенд</b> — полноценное приложение ещё до сервера.</li>
+    <li c-lang="en"><b>Local ORM and mock backend</b> — a full app before the server exists.</li>
+    <li c-lang="uz"><b>Komponentlar, i18n, dark mode, animatsiyalar, devtools</b> — barchasi ichida.</li>
+    <li c-lang="ru"><b>Компоненты, i18n, тёмная тема, анимации, devtools</b> — всё внутри.</li>
+    <li c-lang="en"><b>Components, i18n, dark mode, animations, devtools</b> — all built in.</li>
+  </ul>
+
+  <h2 id="when"><span c-lang="uz">Qachon ishlatish kerak</span><span c-lang="ru">Когда использовать</span><span c-lang="en">When to use it</span></h2>
+  <p c-lang="uz">Comet quyidagilar uchun juda mos: landing sahifalar, admin panellar, MVP va prototiplar, ichki korporativ tizimlar, mavjud backend (Laravel, Django, Express…) ustidagi interfeyslar, kichik va o'rta SPA'lar.</p>
+  <p c-lang="ru">Comet отлично подходит для: лендингов, админок, MVP и прототипов, внутренних корпоративных систем, интерфейсов поверх существующего бэкенда (Laravel, Django, Express…), небольших и средних SPA.</p>
+  <p c-lang="en">Comet is a great fit for landing pages, admin panels, MVPs and prototypes, internal tools, UIs on top of an existing backend (Laravel, Django, Express…), and small-to-medium SPAs.</p>
+  <div class="callout warn"><b>⚠</b>
+    <p c-lang="uz">Halol cheklov: v0.1 server tomonda render (SSR) qilmaydi. Agar sahifa qidiruv tizimlarida birinchi o'rinda bo'lishi juda muhim bo'lsa, hozircha Next.js/Nuxt/Astro'ni tanlang yoki muhim kontentni <code>index.html</code>'ga statik yozing. Prerender (SSG) — v0.2 rejasida.</p>
+    <p c-lang="ru">Честное ограничение: в v0.1 нет серверного рендеринга (SSR). Если SEO критично, пока выбирайте Next.js/Nuxt/Astro или пишите важный контент статически в <code>index.html</code>. Пререндер (SSG) запланирован в v0.2.</p>
+    <p c-lang="en">Honest limitation: v0.1 has no server-side rendering. If SEO is critical, pick Next.js/Nuxt/Astro for now, or write key content statically in <code>index.html</code>. Prerendering (SSG) is planned for v0.2.</p>
+  </div>
+
+  <h2 id="principles"><span c-lang="uz">Tamoyillar</span><span c-lang="ru">Принципы</span><span c-lang="en">Principles</span></h2>
+  <table>
+    <tr><th>#</th><th><span c-lang="uz">Tamoyil</span><span c-lang="ru">Принцип</span><span c-lang="en">Principle</span></th></tr>
+    <tr><td>1</td><td><span c-lang="uz">HTML — asosiy til. JavaScript ixtiyoriy.</span><span c-lang="ru">HTML — главный язык. JavaScript — по желанию.</span><span c-lang="en">HTML is the main language. JavaScript is optional.</span></td></tr>
+    <tr><td>2</td><td><span c-lang="uz">Build yo'q. Fayl saqlandi — brauzerni yangiladingiz — ko'rdingiz.</span><span c-lang="ru">Без сборки. Сохранили файл — обновили браузер — увидели.</span><span c-lang="en">No build. Save the file, refresh the browser, see it.</span></td></tr>
+    <tr><td>3</td><td><span c-lang="uz">Halollik: va'da qilinmagan tezlik yo'q, cheklovlar ochiq yozilgan.</span><span c-lang="ru">Честность: никаких выдуманных ускорений, ограничения описаны открыто.</span><span c-lang="en">Honesty: no made-up speedups, limitations are documented openly.</span></td></tr>
+    <tr><td>4</td><td><span c-lang="uz">Hamma narsa bilan ishlaydi: Tailwind, Bootstrap, jQuery, oddiy JS.</span><span c-lang="ru">Работает со всем: Tailwind, Bootstrap, jQuery, обычный JS.</span><span c-lang="en">Works with everything: Tailwind, Bootstrap, jQuery, plain JS.</span></td></tr>
+  </table>
+  <p><a href="docs/installation"><span c-lang="uz">Keyingi: O'rnatish →</span><span c-lang="ru">Далее: Установка →</span><span c-lang="en">Next: Installation →</span></a></p>
+</div>

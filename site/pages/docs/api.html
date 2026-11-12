@@ -1,0 +1,83 @@
+<title>JavaScript API</title>
+<div c-layout="docs">
+  <h1>JavaScript API</h1>
+  <p class="lead-p">
+    <span c-lang="uz">Global <code>Comet</code> obyekti. Uni oddiy <code>&lt;script&gt;</code> ichida, sahifalarda yoki komponentlarda ishlating.</span>
+    <span c-lang="ru">Глобальный объект <code>Comet</code>. Используйте его в обычном <code>&lt;script&gt;</code>, на страницах или в компонентах.</span>
+    <span c-lang="en">The global <code>Comet</code> object. Use it from a plain <code>&lt;script&gt;</code>, in pages or in components.</span>
+  </p>
+
+  <h2 id="core">Core</h2>
+  <table>
+    <tr><td><code>Comet.version</code></td><td><span c-lang="uz">Versiya</span><span c-lang="ru">Версия</span><span c-lang="en">Version string</span></td></tr>
+    <tr><td><code>Comet.start()</code></td><td><span c-lang="uz">Qo'lda ishga tushirish (<code>data-manual</code> bilan)</span><span c-lang="ru">Ручной запуск (с <code>data-manual</code>)</span><span c-lang="en">Manual start (with <code>data-manual</code>)</span></td></tr>
+    <tr><td><code>Comet.ready(fn)</code></td><td><span c-lang="uz">Tayyor bo'lgach chaqiriladi</span><span c-lang="ru">Вызывается после готовности</span><span c-lang="en">Run after start</span></td></tr>
+    <tr><td><code>Comet.mount(el, scope?)</code></td><td><span c-lang="uz">DOM qismini qo'lda ishga tushirish</span><span c-lang="ru">Инициализировать часть DOM вручную</span><span c-lang="en">Initialize a DOM subtree manually</span></td></tr>
+    <tr><td><code>Comet.config({ … })</code></td><td><code>title, base, prefetch, transitions, observe, components</code></td></tr>
+    <tr><td><code>Comet.scope(el)</code> · <code>Comet.evaluate(el, expr)</code></td><td><span c-lang="uz">Element holatini tashqaridan o'qish</span><span c-lang="ru">Доступ к состоянию элемента снаружи</span><span c-lang="en">Reach an element's state from outside</span></td></tr>
+  </table>
+
+  <h2 id="reactivity"><span c-lang="uz">Reaktivlik</span><span c-lang="ru">Реактивность</span><span c-lang="en">Reactivity</span></h2>
+  <table>
+    <tr><td><code>Comet.reactive(obj)</code></td><td><span c-lang="uz">Reaktiv proxy</span><span c-lang="ru">Реактивный proxy</span><span c-lang="en">Reactive proxy</span></td></tr>
+    <tr><td><code>Comet.effect(fn)</code></td><td><span c-lang="uz">Bog'liqliklar o'zgarganda qayta ishlaydi</span><span c-lang="ru">Перезапускается при изменении зависимостей</span><span c-lang="en">Re-runs when dependencies change</span></td></tr>
+    <tr><td><code>Comet.computed(fn)</code></td><td><code>{ value }</code></td></tr>
+    <tr><td><code>Comet.watch(getter, cb, { immediate, deep })</code></td><td><span c-lang="uz">O'zgarishni kuzatish</span><span c-lang="ru">Следить за изменением</span><span c-lang="en">Watch for changes</span></td></tr>
+    <tr><td><code>Comet.nextTick()</code></td><td><span c-lang="uz">DOM yangilangandan keyin</span><span c-lang="ru">После обновления DOM</span><span c-lang="en">After the DOM updated</span></td></tr>
+    <tr><td><code>Comet.raw(obj)</code> · <code>Comet.toRaw(proxy)</code></td><td><span c-lang="uz">Reaktivlikdan chiqarish</span><span c-lang="ru">Исключить из реактивности</span><span c-lang="en">Opt out of reactivity</span></td></tr>
+    <tr><td><code>Comet.store(name, obj, { persist })</code></td><td>$store</td></tr>
+    <tr><td><code>Comet.data(name, factory)</code></td><td><span c-lang="uz"><code>c-data="name()"</code> uchun</span><span c-lang="ru">Для <code>c-data="name()"</code></span><span c-lang="en">For <code>c-data="name()"</code></span></td></tr>
+  </table>
+
+  <h2 id="extend"><span c-lang="uz">Kengaytirish</span><span c-lang="ru">Расширение</span><span c-lang="en">Extending</span></h2>
+  <table>
+    <tr><td><code>Comet.directive(name, fn)</code></td><td><code>c-name</code></td></tr>
+    <tr><td><code>Comet.magic(name, getter)</code></td><td><code>$name</code></td></tr>
+    <tr><td><code>Comet.component(name, urlOrDef)</code></td><td><code>&lt;name&gt;</code></td></tr>
+    <tr><td><code>Comet.plugin(fn)</code></td><td><code>fn(Comet)</code></td></tr>
+  </table>
+  <div c-code="js"><script type="text/plain">
+    // a tiny plugin
+    Comet.plugin((C) => {
+      C.magic('now', () => Date.now());
+      C.directive('uppercase', ({ el }) => { el.style.textTransform = 'uppercase' });
+    });
+  </script></div>
+
+  <h2 id="router">Router</h2>
+  <table>
+    <tr><td><code>Comet.navigate(path, { replace })</code></td><td><span c-lang="uz">Sahifaga o'tish</span><span c-lang="ru">Перейти на страницу</span><span c-lang="en">Go to a page</span></td></tr>
+    <tr><td><code>Comet.routes({ '/a/:id': 'pages/a.html' })</code></td><td><span c-lang="uz">Dinamik manzillar</span><span c-lang="ru">Динамические маршруты</span><span c-lang="en">Dynamic routes</span></td></tr>
+    <tr><td><code>Comet.router.route</code></td><td><code>{ path, params, query, hash, status }</code></td></tr>
+    <tr><td><code>Comet.router.before(fn)</code> · <code>.after(fn)</code></td><td><span c-lang="uz">Guard va hooklar</span><span c-lang="ru">Guard'ы и хуки</span><span c-lang="en">Guards &amp; hooks</span></td></tr>
+    <tr><td><code>Comet.router.prefetch(path)</code></td><td><span c-lang="uz">Sahifani oldindan yuklash</span><span c-lang="ru">Предзагрузка страницы</span><span c-lang="en">Preload a page</span></td></tr>
+  </table>
+
+  <h2 id="data"><span c-lang="uz">Ma'lumotlar</span><span c-lang="ru">Данные</span><span c-lang="en">Data</span></h2>
+  <table>
+    <tr><td><code>Comet.fetch(url, opts)</code> · <code>.get/.post/.put/.patch/.delete</code></td><td>HTTP</td></tr>
+    <tr><td><code>Comet.request(url, opts)</code></td><td><code>{ ok, status, data, headers }</code> <span c-lang="uz">(xato tashlamaydi)</span><span c-lang="ru">(без исключений)</span><span c-lang="en">(never throws on HTTP errors)</span></td></tr>
+    <tr><td><code>Comet.http.base</code> · <code>.headers</code> · <code>.before(fn)</code> · <code>.after(fn)</code> · <code>.clearCache()</code></td><td><span c-lang="uz">HTTP sozlamalari</span><span c-lang="ru">Настройки HTTP</span><span c-lang="en">HTTP configuration</span></td></tr>
+    <tr><td><code>Comet.db.&lt;table&gt;</code> · <code>.model()</code> · <code>.seed()</code> · <code>.drop()</code></td><td>ORM</td></tr>
+    <tr><td><code>Comet.mock(defs, opts)</code> · <code>.crud()</code> · <code>.error()</code> · <code>.reply()</code> · <code>.delay()</code> · <code>.clear()</code></td><td>Mock API</td></tr>
+  </table>
+
+  <h2 id="ui">UI</h2>
+  <table>
+    <tr><td><code>Comet.i18n(opts)</code> · <code>Comet.t()</code> · <code>Comet.lang</code> · <code>Comet.setLang()</code></td><td>i18n</td></tr>
+    <tr><td><code>Comet.fmt</code></td><td><code>number, currency, percent, compact, date, time, relative, list</code></td></tr>
+    <tr><td><code>Comet.theme</code></td><td><code>{ mode, dark, toggle(), set() }</code></td></tr>
+    <tr><td><code>Comet.toast(msg, opts)</code></td><td><span c-lang="uz">Bildirishnoma</span><span c-lang="ru">Уведомление</span><span c-lang="en">Notification</span></td></tr>
+    <tr><td><code>Comet.devtools(on?)</code></td><td><span c-lang="uz">Devtools paneli</span><span c-lang="ru">Панель devtools</span><span c-lang="en">Devtools panel</span></td></tr>
+    <tr><td><code>Comet.stats</code></td><td><code>{ effects, runs, mountMs, startMs }</code></td></tr>
+  </table>
+
+  <h2 id="events"><span c-lang="uz">Hodisalar</span><span c-lang="ru">События</span><span c-lang="en">Events</span></h2>
+  <table>
+    <tr><td><code>comet:init</code></td><td><span c-lang="uz">Mount'dan oldin — plaginlarni ro'yxatdan o'tkazish vaqti</span><span c-lang="ru">Перед монтированием — время регистрировать плагины</span><span c-lang="en">Before mounting — time to register plugins</span></td></tr>
+    <tr><td><code>comet:ready</code></td><td><span c-lang="uz">Hammasi tayyor</span><span c-lang="ru">Всё готово</span><span c-lang="en">Everything is ready</span></td></tr>
+    <tr><td><code>comet:navigate</code></td><td><code>{ to, from, status }</code></td></tr>
+    <tr><td><code>comet:lang</code></td><td><code>{ lang }</code></td></tr>
+    <tr><td><code>c:before</code> · <code>c:success</code> · <code>c:error</code></td><td><span c-lang="uz">HTTP direktivali elementda</span><span c-lang="ru">На элементе с HTTP-директивой</span><span c-lang="en">On elements with an HTTP directive</span></td></tr>
+  </table>
+</div>
