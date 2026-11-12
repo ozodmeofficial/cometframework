@@ -1,0 +1,7 @@
+<template>
+  <span class="badge">{{ name }} · {{ greet() }}</span>
+</template>
+<script>
+  export default ({ props }) => ({ greet() { return 'hi ' + props.name } })
+</script>
+<style scoped>.badge { color: rgb(255, 0, 0); }</style>

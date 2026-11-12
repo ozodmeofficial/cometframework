@@ -1,0 +1,53 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><script src="/dist/comet.js"></script></head>
+<body>
+  <div id="counter" c-data="{ count: 1, get double(){ return this.count * 2 }, inc(){ this.count++ } }">
+    <span id="c1">{{ count }}</span><span id="c2" c-text="double"></span>
+    <button id="inc" @click="inc">+</button><button id="inc2" @click="count += 10">+10</button>
+    <p id="show" c-show="count > 5">big</p>
+    <p id="ifa" c-if="count === 1">one</p><p id="ifb" c-else-if="count < 5">few</p><p id="ifc" c-else>many</p>
+    <div id="cls" class="base" :class="{ on: count > 1, off: count <= 1 }"></div>
+    <a id="lnk" href="/x/{{ count }}">l</a>
+    <div c-data="{ local: 'L' }"><button id="parentset" @click="count = 100">set parent</button><i id="loc">{{ local }}-{{ count }}</i></div>
+  </div>
+
+  <div id="list" c-data="{ items: [{id:1,t:'a'},{id:2,t:'b'},{id:3,t:'c'}], nextId: 4 }">
+    <ul><li c-for="(it, i) in items" c-key="it.id" :data-id="it.id">{{ i }}:{{ it.t }}</li></ul>
+    <button id="add" @click="items.push({id: nextId++, t: 'n'})">add</button>
+    <button id="rev" @click="items.reverse()">rev</button>
+    <button id="del" @click="items.splice(0,1)">del</button>
+    <button id="edit" @click="items[0].t = 'Z'">edit</button>
+    <span id="n">{{ items.length }}</span>
+    <template c-for="n in 3"><b class="num">{{ n }}</b></template>
+  </div>
+
+  <div id="model" c-data="{ name: 'Ann', agree: false, tags: ['x'], pick: 'b', age: 3, size: 'm' }">
+    <input id="name" c-model="name"><span id="name-out">{{ name }}</span>
+    <input id="agree" type="checkbox" c-model="agree"><span id="agree-out">{{ agree }}</span>
+    <input class="tag" type="checkbox" value="x" c-model="tags"><input class="tag" type="checkbox" value="y" c-model="tags"><span id="tags-out">{{ tags.join(',') }}</span>
+    <input type="radio" name="p" value="a" c-model="pick"><input id="rb" type="radio" name="p" value="b" c-model="pick"><span id="pick-out">{{ pick }}</span>
+    <input id="age" type="number" c-model="age"><span id="age-out">{{ typeof age }}</span>
+    <select id="size" c-model="size"><option c-for="s in ['s','m','l']" :value="s">{{ s }}</option></select>
+  </div>
+
+  <div id="events" c-data="{ k: 0, out: false, got: '' }" @ping="got = $event.detail">
+    <input id="key" @keydown.enter="k++">
+    <span id="k">{{ k }}</span>
+    <div id="box" @click.outside="out = true">box</div><span id="out">{{ out }}</span>
+    <button id="emit" @click="$emit('ping', 'pong')">emit</button><span id="got">{{ got }}</span>
+  </div>
+
+  <template c-component="ui-card" c-props="title, count">
+    <section class="card"><h3 class="ct">{{ title }} ({{ count }})</h3><div class="body"><slot></slot></div><footer><slot name="foot">default-foot</slot></footer><button class="cb" @click="$emit('bump', count + 1)">bump</button></section>
+  </template>
+  <div id="comp" c-data="{ n: 1, label: 'Hello' }">
+    <ui-card id="card1" class="extra" title="Static" :count="n" @bump="n = $event.detail"><p class="slotp">{{ label }} slot</p><span slot="foot">custom-foot</span></ui-card>
+  </div>
+
+  <div id="refs" c-data="{ v: '' }"><input c-ref="inp" value="hi"><button id="refbtn" @click="v = $refs.inp.value">r</button><span id="refout">{{ v }}</span></div>
+  <div id="pre" c-pre>{{ untouched }}</div>
+  <div id="store" c-data><span id="st">{{ $store.cart.items.length }}</span><button id="stadd" @click="$store.cart.add('x')">a</button></div>
+  <script>
+    Comet.store('cart', { items: [], add(i) { this.items.push(i) } }, { persist: true });
+  </script>
+</body></html>

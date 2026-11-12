@@ -1,0 +1,41 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><script src="/dist/comet.js"></script>
+<script>
+  Comet.db.model('todos', { defaults: { done: false }, timestamps: true, validate: { title: (v) => (v && v.length >= 2) || 'Title too short' } });
+  Comet.mock.crud('/api/todos', 'todos');
+  let fail = false;
+  Comet.mock({
+    'GET /api/search': ({ query }) => ['apple', 'banana', 'cherry'].filter((x) => x.includes(query.q || '')),
+    'GET /api/user/:id': ({ params }) => ({ id: +params.id, name: 'User ' + params.id }),
+    'POST /api/fail': () => Comet.mock.error(500, 'Server exploded'),
+    'GET /api/html': () => '<b id="swapped">{{ 1 + 1 }}</b>',
+  }, { delay: 30 });
+  window.__clear = () => Comet.db.todos.clear();
+</script></head>
+<body>
+  <div id="todos" c-get="/api/todos" c-as="todos">
+    <p id="loading" c-loading>Loading…</p>
+    <p id="empty" c-empty>No todos</p>
+    <ul><li class="todo" c-for="t in todos" c-key="t.id">{{ t.title }}</li></ul>
+  </div>
+  <form id="f" c-post="/api/todos" c-reset c-then="$toast('ok')">
+    <input name="title" id="title" required>
+    <small id="title-err" c-error="title"></small>
+    <button id="submit" :disabled="$loading">Add</button>
+  </form>
+
+  <div id="search" c-data="{ q: '' }">
+    <input id="q" c-model="q">
+    <ul c-get="/api/search?q={{ q }}" c-as="results" c-debounce="50"><li class="res" c-for="r in results">{{ r }}</li></ul>
+  </div>
+
+  <div id="user" c-get="/api/user/7" c-as="user"><span id="uname">{{ user && user.name }}</span></div>
+
+  <div id="opt" c-data="{ items: ['a'] }">
+    <button id="optbtn" c-post="/api/fail" c-optimistic="items.push('b')" c-catch="window.__caught = $error.message">x</button>
+    <span id="optn">{{ items.length }}</span>
+  </div>
+  <div id="htmlswap" c-get="/api/html"></div>
+
+  <div id="dbx" c-data="{ list: $db.todos.where({ done: true }).live() }"><span id="donecount">{{ list.length }}</span></div>
+</body></html>

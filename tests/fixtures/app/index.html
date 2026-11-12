@@ -1,0 +1,14 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><base href="/tests/fixtures/app/"><title>App</title><script src="/dist/comet.js"></script>
+<script type="comet/routes">{ "/users/:id": "pages/users/show.html" }</script>
+<script>
+  Comet.i18n({ langs: ['en', 'uz'], default: 'en', load: 'locales/{lang}.json', detect: false });
+  Comet.component("user-badge", "components/user-badge.html"); Comet.config({ title: '%s · App' });
+</script></head>
+<body>
+  <nav><a id="home" href="./" c-active="cur">Home</a> <a id="about" href="about" c-active="cur">About</a> <a id="u5" href="users/5">U5</a> <a id="docs" href="docs/intro">Docs</a> <a id="docs2" href="docs/next">Docs2</a> <a id="missing" href="nope">Missing</a></nav>
+  <span id="hello">{{ $t('hello', { name: 'Ann' }) }}</span>
+  <button id="uz" @click="$lang = 'uz'">uz</button>
+  <p id="langen" c-lang="en">English</p><p id="languz" c-lang="uz">Uzbek</p>
+  <main c-view></main>
+</body></html>
